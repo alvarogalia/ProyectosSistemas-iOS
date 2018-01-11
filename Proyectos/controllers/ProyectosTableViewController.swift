@@ -17,7 +17,7 @@ class Proyecto {
 }
 
 class ProyectosTableViewController: UITableViewController, XMLParserDelegate, UISearchBarDelegate {
-
+    
     var items = [Proyecto]();
     var items_resp = [Proyecto]();
     var item = Proyecto();
@@ -59,32 +59,53 @@ class ProyectosTableViewController: UITableViewController, XMLParserDelegate, UI
         }
     }
     var actualizando = false
+    
+    
     @objc func loadURLandParse(){
         effectView = activityIndicator(title: "Cargando Información", view: self.tableView)
         let url = URL(string: url_)
         let task = URLSession.shared.dataTask(with: url!) {(data, response, error) in
+            
+            self.items.removeAll()
+            
             if(data != nil){
                 let parser = XMLParser(data: data!)
                 parser.delegate = (self as XMLParserDelegate)
                 self.items.removeAll()
                 parser.parse()
+                
+                DispatchQueue.main.async {
+                    UIView.animate(withDuration: 0.2, animations: {
+                        self.effectView.alpha = 0.0
+                        self.tableView.reloadData()
+                        self.refreshControl?.endRefreshing()
+                    }, completion:{ (finished: Bool) in
+                        self.effectView.removeFromSuperview()
+                        self.actualizando = false
+                        UIView.animate(withDuration: 0.4, animations: {
+                            self.tableView.contentOffset.y = -8.0;
+                        }, completion: {
+                            (value: Bool) in
+                        })
+                    })
+                }
+            }
+            else{
+                DispatchQueue.main.async {
+                    
+                    self.tableView.reloadData()
+                    self.effectView.alpha = 0.0
+                    self.refreshControl?.endRefreshing()
+                    self.effectView.removeFromSuperview()
+                    //self.tableView.reloadData()
+                    self.actualizando = false
+                    self.tableView.contentOffset.y = 0.0
+                    let alert = UIAlertController(title: "Error", message: "Problemas de conexión", preferredStyle: UIAlertControllerStyle.alert)
+                    alert.addAction(UIAlertAction(title: "Reintentar", style: UIAlertActionStyle.default, handler: nil))
+                    self.present(alert, animated: true, completion: nil)
+                }
             }
             
-            DispatchQueue.main.async {
-                UIView.animate(withDuration: 0.2, animations: {
-                    self.effectView.alpha = 0.0
-                    self.tableView.reloadData()
-                    self.refreshControl?.endRefreshing()
-                }, completion:{ (finished: Bool) in
-                    self.effectView.removeFromSuperview()
-                    self.actualizando = false
-                    UIView.animate(withDuration: 0.4, animations: {
-                        self.tableView.contentOffset.y = -8.0;
-                    }, completion: {
-                        (value: Bool) in
-                    })
-                })
-            }
         }
         
         if(self.refreshControl?.isRefreshing != true){
@@ -161,7 +182,7 @@ class ProyectosTableViewController: UITableViewController, XMLParserDelegate, UI
         cell.lblIDProyecto.text = items[indexPath.row].BG
         cell.codProyecto.text = items[indexPath.row].Cod_Proyecto
         cell.lblEmpresa.text = items[indexPath.row].Estatus_Desarrollo
-
+        
         return cell
     }
     
@@ -182,7 +203,39 @@ class ProyectosTableViewController: UITableViewController, XMLParserDelegate, UI
     }
     
     
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        print(self.tableView.contentOffset.y)
+        /*
+         if (scrollView.contentOffset.y >= (scrollView.contentSize.height - scrollView.frame.size.height)) {
+         UIView.animate(withDuration: 0.5, animations: {
+         self.searchBar.alpha = 0.0
+         }, completion: {
+         (value: Bool) in
+         })
+         }
+         
+         if (scrollView.contentOffset.y <= 0){
+         UIView.animate(withDuration: 0.5, animations: {
+         self.searchBar.alpha = 1.0
+         }, completion: {
+         (value: Bool) in
+         })
+         }
+         
+         if (scrollView.contentOffset.y > 0 && scrollView.contentOffset.y < (scrollView.contentSize.height - scrollView.frame.size.height)){
+         UIView.animate(withDuration: 0.5, animations: {
+         self.searchBar.alpha = 0.0
+         }, completion: {
+         (value: Bool) in
+         })
+         }*/
+    }
+    
+    
     //------------------------------------------------------------------------------------------//
+    
+    
+    
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if searchText == "" {
@@ -191,16 +244,23 @@ class ProyectosTableViewController: UITableViewController, XMLParserDelegate, UI
         }
         else{
             
+            //let CambioString = searchText.folding(options: .diacriticInsensitive, locale: nil)
+            //print(CambioString)
+            
             //loadURLandParse()
             var items_proyecto = items_resp
             var items_BG = items_resp
             
             items_proyecto = items_proyecto.filter({ (Proyecto) -> Bool in
-                let stringArr = searchText.trim().lowercased().components(separatedBy: " ")
+                let stringArr = searchText.trim().lowercased().folding(options: .diacriticInsensitive, locale: nil).components(separatedBy: " ")
                 let cantidad = stringArr.count
                 var encontrado = 0
+                
                 for item in stringArr{
-                    if(Proyecto.Proyecto.lowercased().contains(item)){
+                    
+                    
+                    if(Proyecto.Proyecto.lowercased().folding(options: .diacriticInsensitive, locale: NSLocale.current ).contains(item)){
+                        
                         encontrado = encontrado + 1
                     }
                 }
@@ -211,12 +271,13 @@ class ProyectosTableViewController: UITableViewController, XMLParserDelegate, UI
                 }
             })
             
+            
             items_BG = items_BG.filter({ (Proyecto) -> Bool in
-                let stringArr = searchText.trim().lowercased().components(separatedBy: " ")
+                let stringArr = searchText.trim().lowercased().folding(options: .diacriticInsensitive, locale: nil).components(separatedBy: " ")
                 let cantidad = stringArr.count
                 var encontrado = 0
                 for item in stringArr{
-                    if(Proyecto.BG.lowercased().contains(item)){
+                    if(Proyecto.BG.lowercased().folding(options: .diacriticInsensitive, locale: .current).contains(item)){
                         encontrado = encontrado + 1
                     }
                 }
@@ -226,6 +287,7 @@ class ProyectosTableViewController: UITableViewController, XMLParserDelegate, UI
                     return false
                 }
             })
+            
             
             items.removeAll()
             
@@ -240,7 +302,7 @@ class ProyectosTableViewController: UITableViewController, XMLParserDelegate, UI
         
         self.tableView.reloadData()
     }
-
+    
     override func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         self.view.endEditing(true)
     }
@@ -259,3 +321,4 @@ class ProyectosTableViewController: UITableViewController, XMLParserDelegate, UI
     }
     
 }
+

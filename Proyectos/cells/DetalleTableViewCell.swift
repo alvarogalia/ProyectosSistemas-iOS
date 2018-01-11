@@ -10,13 +10,14 @@ import UIKit
 
 class DetalleTableViewCell: UITableViewCell {
 
+    @IBOutlet weak var lblIdentificacion: UILabel!
+    @IBOutlet weak var lblDato: UITextField!
+    
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
     }
-    @IBOutlet weak var lblDato: UILabel!
-    
-    @IBOutlet weak var lblIdentificacion: UILabel!
     
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)

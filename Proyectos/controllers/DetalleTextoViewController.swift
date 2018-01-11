@@ -10,8 +10,8 @@ import UIKit
 
 class DetalleTextoViewController: UIViewController {
 
-    @IBOutlet weak var lblTitulo: UILabel!
     @IBOutlet weak var txtDato: UITextView!
+    @IBOutlet weak var lblTitulo: UILabel!
     
     var SELECTED_TITULO = ""
     var SELECTED_DATO = ""
@@ -29,7 +29,10 @@ class DetalleTextoViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-
+    @IBAction func btnCerrar(_ sender: Any) {
+        self.dismiss(animated: true, completion: nil)
+    }
+    
     /*
     // MARK: - Navigation
 

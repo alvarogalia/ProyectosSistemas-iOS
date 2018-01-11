@@ -12,7 +12,7 @@ import UIKit
 
 
 class ViewController: UIViewController, XMLParserDelegate {
-
+    
     
     @IBOutlet weak var loadingIndicator: UIActivityIndicatorView!
     @IBOutlet weak var btnIniciarSesion: UIButton!
@@ -42,7 +42,7 @@ class ViewController: UIViewController, XMLParserDelegate {
         hideKeyboardWhenTappedAround()
         loadingIndicator.isHidden = true
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -54,26 +54,43 @@ class ViewController: UIViewController, XMLParserDelegate {
         
         let task = URLSession.shared.dataTask(with: url!) {(data, response, error) in
             
-            self.xmlParser = XMLParser(data: data!)
-            self.xmlParser.delegate = self
-            self.xmlParser.parse()
-            
-            DispatchQueue.main.async {
-                self.btnIniciarSesion.isEnabled = true
-                self.loadingIndicator.stopAnimating()
-                self.loadingIndicator.isHidden = true
+            if(data != nil){
                 
-                if(self.loginSuccess > 0){
-                    self.userDefaults.set(self.txtUserName.text, forKey: "UserName")
-                    self.userDefaults.synchronize()
-                    self.performSegue(withIdentifier: "loginSuccess", sender: self)
-                }else{
-                    let alert = UIAlertController(title: "Error", message: "Credenciales inválidas", preferredStyle: UIAlertControllerStyle.alert)
+                self.xmlParser = XMLParser(data: data!)
+                self.xmlParser.delegate = self
+                self.xmlParser.parse()
+                
+                DispatchQueue.main.async {
+                    self.btnIniciarSesion.isEnabled = true
+                    self.loadingIndicator.stopAnimating()
+                    self.loadingIndicator.isHidden = true
+                    
+                    if(self.loginSuccess > 0){
+                        self.userDefaults.set(self.txtUserName.text, forKey: "UserName")
+                        self.userDefaults.synchronize()
+                        self.performSegue(withIdentifier: "loginSuccess", sender: self)
+                    }else{
+                        let alert = UIAlertController(title: "Error", message: "Credenciales inválidas", preferredStyle: UIAlertControllerStyle.alert)
+                        alert.addAction(UIAlertAction(title: "Reintentar", style: UIAlertActionStyle.default, handler: nil))
+                        self.present(alert, animated: true, completion: nil)
+                    }
+                }
+            }
+            else{
+                DispatchQueue.main.async {
+                    self.btnIniciarSesion.isEnabled = true
+                    self.loadingIndicator.stopAnimating()
+                    self.loadingIndicator.isHidden = true
+                    
+                    let alert = UIAlertController(title: "Error", message: "Problemas de conexió", preferredStyle: UIAlertControllerStyle.alert)
                     alert.addAction(UIAlertAction(title: "Reintentar", style: UIAlertActionStyle.default, handler: nil))
                     self.present(alert, animated: true, completion: nil)
+                    
                 }
             }
         }
+        
+        
         if(txtUserName.text?.trim() != "" && txtPassword.text?.trim() != ""){
             self.btnIniciarSesion.isEnabled = false
             self.loadingIndicator.startAnimating()

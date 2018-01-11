@@ -18,9 +18,9 @@ class Estados {
 
 
 class EstadosTableViewController: UITableViewController, XMLParserDelegate {
-
+    
     // MARK: - Table view data source
-
+    
     var items = [Estados]();
     var item = Estados();
     var foundCharacters = "";
@@ -31,12 +31,15 @@ class EstadosTableViewController: UITableViewController, XMLParserDelegate {
     var url_ = ""
     
     
+    
     override func viewDidLoad() {
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 80
         self.tableView.reloadData()
         
     }
+    
+    
     
     override func viewWillAppear(_ animated: Bool) {
         let Cod_Empresa = userDefaults.string(forKey: "Cod_Empresa")
@@ -58,11 +61,16 @@ class EstadosTableViewController: UITableViewController, XMLParserDelegate {
             loadURLandParse()
         }
     }
+    
+    
     var actualizando = false
     @objc func loadURLandParse(){
         effectView = activityIndicator(title: "Cargando Información", view: self.tableView)
         let url = URL(string: url_)
+        
         let task = URLSession.shared.dataTask(with: url!) {(data, response, error) in
+            
+            self.items.removeAll()
             self.actualizando = true
             
             if(data != nil){
@@ -70,17 +78,36 @@ class EstadosTableViewController: UITableViewController, XMLParserDelegate {
                 parser.delegate = (self as XMLParserDelegate)
                 self.items.removeAll()
                 parser.parse()
+                
+                DispatchQueue.main.async {
+                    UIView.animate(withDuration: 0.2, animations: {
+                        self.effectView.alpha = 0.0
+                        self.refreshControl?.endRefreshing()
+                    }, completion:{ (finished: Bool) in
+                        self.effectView.removeFromSuperview()
+                        self.tableView.reloadData()
+                        self.actualizando = false
+                    })
+                }
             }
-            
-            DispatchQueue.main.async {
-                UIView.animate(withDuration: 0.2, animations: {
+            else{
+                
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
                     self.effectView.alpha = 0.0
                     self.refreshControl?.endRefreshing()
-                }, completion:{ (finished: Bool) in
                     self.effectView.removeFromSuperview()
                     self.tableView.reloadData()
                     self.actualizando = false
-                })
+                    
+                    self.tableView.contentOffset.y = 0.0
+                    
+                    let alert = UIAlertController(title: "Error", message: "Problemas de conexión", preferredStyle: UIAlertControllerStyle.alert)
+                    alert.addAction(UIAlertAction(title: "Reintentar", style: UIAlertActionStyle.default, handler: nil))
+                    self.present(alert, animated: true, completion: nil)
+                    
+                }
+                
             }
         }
         
@@ -96,6 +123,7 @@ class EstadosTableViewController: UITableViewController, XMLParserDelegate {
             task.resume()
         }
     }
+    
     
     func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
         if elementName == "Estatus_Desarrollo" {
@@ -134,58 +162,61 @@ class EstadosTableViewController: UITableViewController, XMLParserDelegate {
         cell.lblCantidad.text = self.items[indexPath.row].Cantidad
         return cell
     }
- 
+    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let cell = tableView.cellForRow(at: indexPath) as! ProyectosTableViewCell
         self.SELECTED_ESTADO = cell.lblEstado.text!
         performSegue(withIdentifier: "ProyectosSegue", sender: self)
     }
     
-   
+    
     
     /*
-    // Override to support conditional editing of the table view.
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
-    }
-    */
-
+     // Override to support conditional editing of the table view.
+     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+     // Return false if you do not want the specified item to be editable.
+     return true
+     }
+     */
+    
     /*
-    // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
-    }
-    */
-
+     // Override to support editing the table view.
+     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+     if editingStyle == .delete {
+     // Delete the row from the data source
+     tableView.deleteRows(at: [indexPath], with: .fade)
+     } else if editingStyle == .insert {
+     // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
+     }
+     }
+     */
+    
     /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
-    }
-    */
-
+     // Override to support rearranging the table view.
+     override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
+     
+     }
+     */
+    
     /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
-
+     // Override to support conditional rearranging of the table view.
+     override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
+     // Return false if you do not want the item to be re-orderable.
+     return true
+     }
+     */
+    
     
     // MARK: - Navigation
-
+    
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let controller = segue.destination as! ProyectosTableViewController
         controller.SELECTED_ESTADO = self.SELECTED_ESTADO
         controller.SELECTED_JP_SISTEMAS = self.SELECTED_JP_SISTEMAS
         controller.SELECTED_JP_CLIENTES = self.SELECTED_JP_CLIENTES
+        
     }
+    
 }
+
