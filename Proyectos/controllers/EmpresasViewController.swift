@@ -22,6 +22,7 @@ class EmpresasViewController: UIViewController, UICollectionViewDelegate, UIColl
     var foundCharacters = "";
     let userDefaults = UserDefaults.standard
     var SELECTED_EMPRESA = ""
+    var SELECTED_NombreEmpresa = ""
     @IBOutlet weak var Mycollection: EmpresasCollectionViewCell!
     
     @IBOutlet weak var Collection: UICollectionView!
@@ -76,6 +77,10 @@ class EmpresasViewController: UIViewController, UICollectionViewDelegate, UIColl
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         self.SELECTED_EMPRESA = items[indexPath.row].Codigo_Empresa
         userDefaults.set(self.SELECTED_EMPRESA, forKey: "Cod_Empresa")
+        
+        self.SELECTED_NombreEmpresa = items[indexPath.row].Nombre_Empresa
+        userDefaults.set(self.SELECTED_NombreEmpresa, forKey: "NombreEmpresa")
+        
         performSegue(withIdentifier: "empresaSeleccionadaSegue", sender: self)
     }
     

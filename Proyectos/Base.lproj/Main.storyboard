@@ -211,7 +211,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <segmentedControl key="tableHeaderView" opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" segmentControlStyle="plain" selectedSegmentIndex="0" id="4r0-Ki-zZy">
+                        <segmentedControl key="tableHeaderView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" segmentControlStyle="plain" selectedSegmentIndex="0" id="4r0-Ki-zZy">
                             <rect key="frame" x="0.0" y="0.0" width="320" height="30"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <segments>
@@ -286,7 +286,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <searchBar key="tableHeaderView" contentMode="redraw" misplaced="YES" searchBarStyle="minimal" placeholder="Buscar..." showsCancelButton="YES" id="np8-9T-ieN">
+                        <searchBar key="tableHeaderView" contentMode="redraw" searchBarStyle="minimal" placeholder="Buscar..." showsCancelButton="YES" id="np8-9T-ieN">
                             <rect key="frame" x="0.0" y="0.0" width="320" height="56"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                             <textInputTraits key="textInputTraits"/>
@@ -508,10 +508,10 @@
             </objects>
             <point key="canvasLocation" x="-2259" y="1090"/>
         </scene>
-        <!--Tab Bar Controller-->
+        <!--Tar Bar View Controller-->
         <scene sceneID="P3Z-Et-oNY">
             <objects>
-                <tabBarController id="3Ij-Q2-Ce0" sceneMemberID="viewController">
+                <tabBarController id="3Ij-Q2-Ce0" customClass="TarBarViewController" customModule="Proyectos" customModuleProvider="target" sceneMemberID="viewController">
                     <navigationItem key="navigationItem" id="F9d-1D-dZS"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="DfR-LC-Xe2">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="49"/>
