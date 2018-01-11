@@ -18,6 +18,8 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
     @IBOutlet weak var optionView: UIView!
     @IBOutlet weak var pickerView: UIPickerView!
     @IBOutlet weak var dateView: UIView!
+    @IBOutlet weak var datePickerView: UIDatePicker!
+    
     
     @IBAction func btnCerrar(_ sender: Any) {
         self.dismiss(animated: true, completion: nil)
@@ -157,8 +159,10 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
         let nomColumna = self.items[indexPath.row].key
         
         if editando {
-            
             if (texto.contains(nomColumna) || numerico.contains(nomColumna)){
+                if(numerico.contains(nomColumna)){
+                    cell.lblDato.keyboardType = UIKeyboardType.decimalPad
+                }
                 cell.lblDato.isEnabled = true
             }else{
                 cell.lblDato.isEnabled = false
@@ -170,6 +174,7 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
             cell.lblIdentificacion.textColor = UIColor(red: 0, green: 0, blue: 0, alpha: 1.0)
             cell.lblDato.textColor = UIColor(red: 150/255, green: 150/255, blue: 150/255, alpha: 1.0)
         }
+        cell.lblDato.tag = indexPath.row
         
         cell.lblDato.delegate = self
         
@@ -198,6 +203,7 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
                 mostrarOptionPickerView()
             }
             if(date.contains(nomColumna)){
+                
                 mostrarDateView()
             }
         }
@@ -212,6 +218,7 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
             let controller = segue.destination as! DetalleTextoViewController
             controller.SELECTED_DATO = SELECTED_DATO
             controller.SELECTED_TITULO = SELECTED_TITULO
+            controller.EDITANDO = editando
         }
     }
     
@@ -249,13 +256,23 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
     
     @IBAction func btnSeleccionarPicker(_ sender: Any) {
         ocultarOptionPickerView()
+        let cell = self.tableView.cellForRow(at: self.tableView.indexPathForSelectedRow!) as! DetalleTableViewCell
+        cell.lblDato.text = self.items[pickerView.selectedRow(inComponent: 0)].value
+        self.items[self.tableView.indexPathForSelectedRow!.row].value = self.items[pickerView.selectedRow(inComponent: 0)].value
     }
     
     @IBAction func btnCancelarDate(_ sender: Any) {
         ocultarDateView()
     }
+    
     @IBAction func btnSeleccionarDate(_ sender: Any) {
         ocultarDateView()
+        let cell = self.tableView.cellForRow(at: self.tableView.indexPathForSelectedRow!) as! DetalleTableViewCell
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let selectedDate = dateFormatter.string(from: self.datePickerView.date)
+        cell.lblDato.text = selectedDate
+        self.items[self.tableView.indexPathForSelectedRow!.row].value = selectedDate
     }
     
     
@@ -278,6 +295,10 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
         })
     }
     
+    func textFieldDidEndEditing(_ textField: UITextField, reason: UITextFieldDidEndEditingReason) {
+        self.items[textField.tag].value = textField.text!
+    }
+    
     func ocultarDateView(){
         UIView.animate(withDuration: 0.3, animations: {
             self.tableView.frame = CGRect(x: CGFloat(0.0), y: self.view.frame.minY + 70, width: self.view.frame.width, height: self.view.frame.height - 65)
@@ -286,6 +307,7 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
             
         })
     }
+    
     func mostrarDateView(){
         UIView.animate(withDuration: 0.3, animations: {
             self.dateView.frame = CGRect(x: 0.0, y: self.view.frame.height - self.optionView.frame.height, width: self.view.frame.width, height: self.optionView.frame.height)
@@ -295,9 +317,11 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
             
         })
     }
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         view.endEditing(true)
         return true
     }
+    
 }

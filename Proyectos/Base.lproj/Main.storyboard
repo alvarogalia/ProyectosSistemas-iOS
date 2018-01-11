@@ -662,7 +662,6 @@
                                         </state>
                                         <connections>
                                             <action selector="btnSeleccionarDate:" destination="gCL-e6-QxH" eventType="touchUpInside" id="PTW-kt-A9K"/>
-                                            <action selector="btnSeleccionarPicker:" destination="gCL-e6-QxH" eventType="touchUpInside" id="DjV-xS-lbS"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -740,6 +739,7 @@
                     </view>
                     <connections>
                         <outlet property="btnEditar" destination="DuT-cn-qZW" id="f3E-7U-TWG"/>
+                        <outlet property="datePickerView" destination="GOs-l3-AIU" id="4dQ-q4-MyA"/>
                         <outlet property="dateView" destination="cAb-2T-NfV" id="fvK-sC-MRo"/>
                         <outlet property="optionView" destination="sAh-Gg-xXw" id="aD1-WZ-a6W"/>
                         <outlet property="pickerView" destination="cN6-h9-dbJ" id="HH9-1M-ljc"/>
@@ -759,12 +759,13 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" text="Texto" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="haJ-gN-YZ2">
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" delaysContentTouches="NO" editable="NO" text="Texto" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="haJ-gN-YZ2">
                                 <rect key="frame" x="0.0" y="73" width="320" height="407"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <color key="textColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences" returnKeyType="done" enablesReturnKeyAutomatically="YES"/>
+                                <dataDetectorType key="dataDetectorTypes" phoneNumber="YES" calendarEvent="YES"/>
                             </textView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3OQ-gr-bvs">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="65"/>
