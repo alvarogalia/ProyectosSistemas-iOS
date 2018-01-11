@@ -27,6 +27,7 @@
 		B3C71F9A1FFBE9C100FB9895 /* JPSistemasTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3C71F991FFBE9C100FB9895 /* JPSistemasTableViewController.swift */; };
 		B3C71F9E1FFD802200FB9895 /* EmpresasViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3C71F9D1FFD802200FB9895 /* EmpresasViewController.swift */; };
 		B3DF3DDA1FFD831B00F7AE65 /* EmpresasCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3DF3DD91FFD831B00F7AE65 /* EmpresasCollectionViewCell.swift */; };
+		E99EFC112007E89100A8F79F /* TarBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E99EFC102007E89100A8F79F /* TarBarViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -73,6 +74,7 @@
 		B3C71F991FFBE9C100FB9895 /* JPSistemasTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JPSistemasTableViewController.swift; sourceTree = "<group>"; };
 		B3C71F9D1FFD802200FB9895 /* EmpresasViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmpresasViewController.swift; sourceTree = "<group>"; };
 		B3DF3DD91FFD831B00F7AE65 /* EmpresasCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmpresasCollectionViewCell.swift; sourceTree = "<group>"; };
+		E99EFC102007E89100A8F79F /* TarBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TarBarViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -177,6 +179,7 @@
 				B3C71F991FFBE9C100FB9895 /* JPSistemasTableViewController.swift */,
 				B36676151F868C1600C3CA32 /* ProyectosTableViewController.swift */,
 				B34593511F857CDE006BC982 /* ViewController.swift */,
+				E99EFC102007E89100A8F79F /* TarBarViewController.swift */,
 			);
 			path = controllers;
 			sourceTree = "<group>";
@@ -322,6 +325,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E99EFC112007E89100A8F79F /* TarBarViewController.swift in Sources */,
 				B36676161F868C1600C3CA32 /* ProyectosTableViewController.swift in Sources */,
 				B3A16FF81FF3F67D0094D7A6 /* funciones.swift in Sources */,
 				B3ADA12F1FFEC8720020253D /* DetalleTextoViewController.swift in Sources */,
