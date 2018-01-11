@@ -76,17 +76,17 @@ class ProyectosTableViewController: UITableViewController, XMLParserDelegate, UI
                 
                 DispatchQueue.main.async {
                     UIView.animate(withDuration: 0.2, animations: {
-                        self.effectView.alpha = 0.0
+                        //self.effectView.alpha = 0.0
                         self.tableView.reloadData()
                         self.refreshControl?.endRefreshing()
                     }, completion:{ (finished: Bool) in
                         self.effectView.removeFromSuperview()
                         self.actualizando = false
-                        UIView.animate(withDuration: 0.4, animations: {
+                       /* UIView.animate(withDuration: 0.4, animations: {
                             self.tableView.contentOffset.y = -8.0;
                         }, completion: {
                             (value: Bool) in
-                        })
+                        })*/
                     })
                 }
             }
