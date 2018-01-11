@@ -785,10 +785,10 @@
                                         </connections>
                                     </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GPh-u0-sSw">
-                                        <rect key="frame" x="95" y="32" width="130" height="21"/>
+                                        <rect key="frame" x="60" y="32" width="200" height="21"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="21" id="28s-67-Rln"/>
-                                            <constraint firstAttribute="width" constant="130" id="bdX-3n-Qmr"/>
+                                            <constraint firstAttribute="width" constant="200" id="bdX-3n-Qmr"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
                                         <color key="textColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

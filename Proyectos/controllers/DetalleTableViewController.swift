@@ -12,7 +12,7 @@ class Campo {
     var key = ""
     var value = ""
 }
-class DetalleTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, XMLParserDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
+class DetalleTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, XMLParserDelegate, UIPickerViewDelegate, UIPickerViewDataSource, UITextFieldDelegate {
     
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var optionView: UIView!
@@ -74,6 +74,7 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide),
                                                name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         hideKeyboardWhenTappedAround()
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -107,7 +108,7 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
     }
     
     @objc func keyboardWillHide(notification: NSNotification) {
-        self.tableView.frame = CGRect(x: CGFloat(0.0), y: self.view.frame.minY + 70, width: self.view.frame.width, height: self.view.frame.height)
+        self.tableView.frame = CGRect(x: CGFloat(0.0), y: self.view.frame.minY + 70, width: self.view.frame.width, height: self.view.frame.height - 70)
     }
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
@@ -170,6 +171,7 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
             cell.lblDato.textColor = UIColor(red: 150/255, green: 150/255, blue: 150/255, alpha: 1.0)
         }
         
+        cell.lblDato.delegate = self
         
         cell.lblIdentificacion.text = self.mapeo[nomColumna]
         let index = indexPath.row
@@ -286,12 +288,16 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
     }
     func mostrarDateView(){
         UIView.animate(withDuration: 0.3, animations: {
-        self.dateView.frame = CGRect(x: 0.0, y: self.view.frame.height - self.optionView.frame.height, width: self.view.frame.width, height: self.optionView.frame.height)
-        self.optionView.frame = CGRect(x: 0.0, y: self.view.frame.height, width: self.view.frame.width, height: self.optionView.frame.height)
-        self.tableView.frame = CGRect(x: CGFloat(0.0), y: self.view.frame.minY + 70, width: self.view.frame.width, height: self.view.frame.height - self.optionView.frame.height - 65)
+            self.dateView.frame = CGRect(x: 0.0, y: self.view.frame.height - self.optionView.frame.height, width: self.view.frame.width, height: self.optionView.frame.height)
+            self.optionView.frame = CGRect(x: 0.0, y: self.view.frame.height, width: self.view.frame.width, height: self.optionView.frame.height)
+            self.tableView.frame = CGRect(x: CGFloat(0.0), y: self.view.frame.minY + 70, width: self.view.frame.width, height: self.view.frame.height - self.optionView.frame.height - 65)
         }, completion:{ (finished: Bool) in
             
         })
     }
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        view.endEditing(true)
+        return true
+    }
 }
-
