@@ -27,6 +27,8 @@
 		B3C71F9A1FFBE9C100FB9895 /* JPSistemasTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3C71F991FFBE9C100FB9895 /* JPSistemasTableViewController.swift */; };
 		B3C71F9E1FFD802200FB9895 /* EmpresasViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3C71F9D1FFD802200FB9895 /* EmpresasViewController.swift */; };
 		B3DF3DDA1FFD831B00F7AE65 /* EmpresasCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3DF3DD91FFD831B00F7AE65 /* EmpresasCollectionViewCell.swift */; };
+		E926FC802007F51C0067BBC3 /* BuscarProyectosTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E926FC7F2007F51C0067BBC3 /* BuscarProyectosTableViewCell.swift */; };
+		E926FC822007F5680067BBC3 /* BuscarProyectosTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E926FC812007F5680067BBC3 /* BuscarProyectosTableViewController.swift */; };
 		E99EFC112007E89100A8F79F /* TarBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E99EFC102007E89100A8F79F /* TarBarViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -74,6 +76,8 @@
 		B3C71F991FFBE9C100FB9895 /* JPSistemasTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JPSistemasTableViewController.swift; sourceTree = "<group>"; };
 		B3C71F9D1FFD802200FB9895 /* EmpresasViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmpresasViewController.swift; sourceTree = "<group>"; };
 		B3DF3DD91FFD831B00F7AE65 /* EmpresasCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmpresasCollectionViewCell.swift; sourceTree = "<group>"; };
+		E926FC7F2007F51C0067BBC3 /* BuscarProyectosTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuscarProyectosTableViewCell.swift; sourceTree = "<group>"; };
+		E926FC812007F5680067BBC3 /* BuscarProyectosTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuscarProyectosTableViewController.swift; sourceTree = "<group>"; };
 		E99EFC102007E89100A8F79F /* TarBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TarBarViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -164,6 +168,7 @@
 				B36676111F86829C00C3CA32 /* EstadoTableViewCell.swift */,
 				B3C71F971FFBE7C900FB9895 /* JPSistemasTableViewCell.swift */,
 				B36676131F86892100C3CA32 /* ProyectoTableViewCell.swift */,
+				E926FC7F2007F51C0067BBC3 /* BuscarProyectosTableViewCell.swift */,
 			);
 			path = cells;
 			sourceTree = "<group>";
@@ -180,6 +185,7 @@
 				B36676151F868C1600C3CA32 /* ProyectosTableViewController.swift */,
 				B34593511F857CDE006BC982 /* ViewController.swift */,
 				E99EFC102007E89100A8F79F /* TarBarViewController.swift */,
+				E926FC812007F5680067BBC3 /* BuscarProyectosTableViewController.swift */,
 			);
 			path = controllers;
 			sourceTree = "<group>";
@@ -338,8 +344,10 @@
 				B3C71F9A1FFBE9C100FB9895 /* JPSistemasTableViewController.swift in Sources */,
 				B36676121F86829C00C3CA32 /* EstadoTableViewCell.swift in Sources */,
 				B3ADA12D1FFEB9E20020253D /* DetalleTableViewController.swift in Sources */,
+				E926FC802007F51C0067BBC3 /* BuscarProyectosTableViewCell.swift in Sources */,
 				B36676141F86892100C3CA32 /* ProyectoTableViewCell.swift in Sources */,
 				B3C71F981FFBE7C900FB9895 /* JPSistemasTableViewCell.swift in Sources */,
+				E926FC822007F5680067BBC3 /* BuscarProyectosTableViewController.swift in Sources */,
 				B34593501F857CDE006BC982 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
