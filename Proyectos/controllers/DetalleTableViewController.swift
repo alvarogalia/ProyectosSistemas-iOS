@@ -157,6 +157,9 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
         let cell = tableView.dequeueReusableCell(withIdentifier: "ProyectosCell", for: indexPath) as! DetalleTableViewCell
         
         let nomColumna = self.items[indexPath.row].key
+        let index = indexPath.row
+        let campo_aux = self.items[index]
+        var dato = campo_aux.value
         
         if editando {
             if (texto.contains(nomColumna) || numerico.contains(nomColumna)){
@@ -164,7 +167,7 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
                     cell.lblDato.keyboardType = UIKeyboardType.decimalPad
                 }
                 cell.lblDato.isEnabled = true
-            }else{
+            }else {
                 cell.lblDato.isEnabled = false
             }
             cell.lblIdentificacion.textColor = UIColor(red: 150/255, green: 150/255, blue: 150/255, alpha: 1.0)
@@ -174,16 +177,14 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
             cell.lblIdentificacion.textColor = UIColor(red: 0, green: 0, blue: 0, alpha: 1.0)
             cell.lblDato.textColor = UIColor(red: 150/255, green: 150/255, blue: 150/255, alpha: 1.0)
         }
-        cell.lblDato.tag = indexPath.row
-        
-        cell.lblDato.delegate = self
-        
-        cell.lblIdentificacion.text = self.mapeo[nomColumna]
-        let index = indexPath.row
-        let campo_aux = self.items[index]
-        let dato = campo_aux.value
+        if(date.contains(nomColumna)){
+            dato = dato.components(separatedBy: " ")[0]
+            cell.lblDato.isEnabled = false
+        }
         cell.lblDato.text = dato
-        
+        cell.lblDato.tag = indexPath.row
+        cell.lblDato.delegate = self
+        cell.lblIdentificacion.text = self.mapeo[nomColumna]
         cell.selectionStyle = UITableViewCellSelectionStyle.none
         
         return cell
@@ -193,6 +194,8 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
         
         let cell = tableView.cellForRow(at: indexPath) as! DetalleTableViewCell
         let nomColumna = self.items[indexPath.row].key
+        let valor = self.items[indexPath.row].value
+        
         SELECTED_DATO = cell.lblDato.text!
         SELECTED_TITULO = cell.lblIdentificacion.text!
         if (SELECTED_TITULO == "Bitacora" || SELECTED_TITULO == "Control De Gestion" || SELECTED_TITULO == "Nombre Proyecto")
@@ -203,10 +206,16 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
                 mostrarOptionPickerView()
             }
             if(date.contains(nomColumna)){
-                
                 mostrarDateView()
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "yyyy-MM-dd" //Your date format
+                dateFormatter.timeZone = TimeZone.current //Current time zone
+                let date = dateFormatter.date(from: valor.components(separatedBy: " ")[0])
+                datePickerView.date = date!
             }
         }
+        
+        
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -286,6 +295,32 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
     }
     
     func mostrarOptionPickerView(){
+        let cell = self.tableView.cellForRow(at: self.tableView.indexPathForSelectedRow!) as! DetalleTableViewCell
+        let cell_framemaxY = cell.frame.maxY
+        let cell_frameminY = cell.frame.minY
+        let tableView_contentOffsetY = tableView.contentOffset.y
+        let tableView_frameheight = self.view.frame.height - 70  //tableView.frame.height
+        let minY = (tableView_frameheight - 200 - 50)
+        
+        print(minY)
+        print(cell_frameminY)
+        print(tableView_contentOffsetY)
+        print(tableView_frameheight)
+        
+        let scroll = CGFloat(200)
+        if(tableView_contentOffsetY > 0){
+            if(scroll <= tableView_contentOffsetY){
+                //tableView.contentOffset.y = tableView.contentOffset.y - scroll
+                tableView.contentOffset.y = tableView_frameheight - tableView_contentOffsetY
+            }
+        }
+        
+        
+        
+        let delta = ((tableView_contentOffsetY + tableView_frameheight)-cell_framemaxY)
+        if( delta <= 200){
+            tableView.contentOffset.y = tableView.contentOffset.y + (200-delta)
+        }
         UIView.animate(withDuration: 0.3, animations: {
             self.tableView.frame = CGRect(x: CGFloat(0.0), y: self.view.frame.minY + 70, width: self.view.frame.width, height: self.view.frame.height - self.optionView.frame.height - 65)
             self.optionView.frame = CGRect(x: 0.0, y: self.view.frame.height - self.optionView.frame.height, width: self.view.frame.width, height: self.optionView.frame.height)
@@ -309,6 +344,15 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
     }
     
     func mostrarDateView(){
+        let cell = self.tableView.cellForRow(at: self.tableView.indexPathForSelectedRow!) as! DetalleTableViewCell
+        let cell_framemaxY = cell.frame.maxY
+        let tableView_contentOffsetY = tableView.contentOffset.y
+        let tableView_frameheight = self.view.frame.height - 70  //tableView.frame.height
+        
+        let delta = ((tableView_contentOffsetY + tableView_frameheight)-cell_framemaxY)
+        if( delta < 200){
+            tableView.contentOffset.y = tableView.contentOffset.y + (200-delta)
+        }
         UIView.animate(withDuration: 0.3, animations: {
             self.dateView.frame = CGRect(x: 0.0, y: self.view.frame.height - self.optionView.frame.height, width: self.view.frame.width, height: self.optionView.frame.height)
             self.optionView.frame = CGRect(x: 0.0, y: self.view.frame.height, width: self.view.frame.width, height: self.optionView.frame.height)
