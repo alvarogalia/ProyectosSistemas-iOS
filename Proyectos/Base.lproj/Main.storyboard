@@ -611,21 +611,33 @@
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="12" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="fiB-uQ-AKm">
-                                                    <rect key="frame" x="133" y="6" width="179" height="30"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="12" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="fiB-uQ-AKm">
+                                                    <rect key="frame" x="141" y="6" width="171" height="30"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="30" id="oDl-ee-l3F"/>
+                                                    </constraints>
                                                     <nil key="textColor"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                     <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardAppearance="alert" returnKeyType="done" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no"/>
                                                 </textField>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Nombre Proyecto" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rNn-HT-49H">
-                                                    <rect key="frame" x="15" y="11" width="110" height="21"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Nombre Proyecto" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rNn-HT-49H">
+                                                    <rect key="frame" x="23" y="11" width="110" height="21"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="110" id="MGO-Xd-OHM"/>
+                                                        <constraint firstAttribute="height" constant="21" id="qaq-Du-c2D"/>
+                                                    </constraints>
                                                     <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="trailing" secondItem="fiB-uQ-AKm" secondAttribute="trailing" constant="8" id="MVg-ww-QIP"/>
+                                                <constraint firstItem="fiB-uQ-AKm" firstAttribute="centerY" secondItem="cXd-hl-J9t" secondAttribute="centerY" id="VnE-0D-QYf"/>
+                                                <constraint firstItem="rNn-HT-49H" firstAttribute="centerY" secondItem="cXd-hl-J9t" secondAttribute="centerY" id="asn-ot-oKz"/>
+                                                <constraint firstItem="rNn-HT-49H" firstAttribute="leading" secondItem="cXd-hl-J9t" secondAttribute="leadingMargin" constant="8" id="do4-9L-Gsf"/>
+                                                <constraint firstItem="fiB-uQ-AKm" firstAttribute="leading" secondItem="rNn-HT-49H" secondAttribute="trailing" constant="8" id="uHP-yQ-8xL"/>
+                                            </constraints>
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="lblDato" destination="fiB-uQ-AKm" id="7dP-to-s58"/>

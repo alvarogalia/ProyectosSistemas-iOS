@@ -35,20 +35,20 @@ class ProyectosTableViewController: UITableViewController, XMLParserDelegate, UI
     
     override func viewWillAppear(_ animated: Bool) {
         
-        let Cod_Empresa = UserDefaults.standard.string(forKey: "Cod_Empresa")
+        let Cod_Empresa = UserDefaults.standard.string(forKey: "Cod_Empresa")!
         
         if(self.SELECTED_ESTADO != ""){
             if(self.SELECTED_JP_SISTEMAS != ""){
-                url_ = "http://200.111.46.182/WS_MovilProyecto/MovilProyecto.asmx/getListadoProyectosPorEstadoJPSistemasEmpresa?Cod_Empresa=\(Cod_Empresa ?? "")&JP_SISTEMAS=\(self.SELECTED_JP_SISTEMAS.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)&estado=\(self.SELECTED_ESTADO.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)"
+                url_ = "http://200.111.46.182/WS_MovilProyecto/MovilProyecto.asmx/getListadoProyectosPorEstadoJPSistemasEmpresa?Cod_Empresa=\(Cod_Empresa )&JP_SISTEMAS=\(self.SELECTED_JP_SISTEMAS.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)&estado=\(self.SELECTED_ESTADO.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)"
             }
             if(self.SELECTED_JP_CLIENTES != ""){
-                url_ = "http://200.111.46.182/WS_MovilProyecto/MovilProyecto.asmx/getListadoProyectosPorEstadoJPClientesEmpresa?Cod_Empresa=\(Cod_Empresa ?? "")&JPCliente=\(self.SELECTED_JP_CLIENTES.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)&estado=\(self.SELECTED_ESTADO.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)"
+                url_ = "http://200.111.46.182/WS_MovilProyecto/MovilProyecto.asmx/getListadoProyectosPorEstadoJPClientesEmpresa?Cod_Empresa=\(Cod_Empresa)&JPCliente=\(self.SELECTED_JP_CLIENTES.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)&estado=\(self.SELECTED_ESTADO.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)"
             }
             if(self.SELECTED_JP_CLIENTES == "" && self.SELECTED_JP_SISTEMAS == ""){
-                url_ = "http://200.111.46.182/WS_MovilProyecto/MovilProyecto.asmx/getListadoProyectosPorEstadoEmpresa?Cod_Empresa=\(Cod_Empresa ?? "")&txtEstado=\(SELECTED_ESTADO.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)"
+                url_ = "http://200.111.46.182/WS_MovilProyecto/MovilProyecto.asmx/getListadoProyectosPorEstadoEmpresa?Cod_Empresa=\(Cod_Empresa)&txtEstado=\(SELECTED_ESTADO.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)"
             }
         }else{
-            url_ = "http://200.111.46.182/WS_MovilProyecto/MovilProyecto.asmx/getListadoProyectosPorEmpresa?Cod_Empresa=\(Cod_Empresa ?? "")"
+            url_ = "http://200.111.46.182/WS_MovilProyecto/MovilProyecto.asmx/getListadoProyectosPorEmpresa?Cod_Empresa=\(Cod_Empresa)"
         }
         
         refreshControl = UIRefreshControl()

@@ -30,7 +30,7 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
     }
     @IBOutlet weak var btnEditar: UIButton!
     
-    
+    var celdas : [String:String] = [:]
     
     var items = [Campo]();
     var item = Campo();
@@ -39,8 +39,11 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
     var SELECTED_COD_PROYECTO = ""
     var SELECTED_TITULO = ""
     var SELECTED_DATO = ""
+    var SELECTED_COLNAME = ""
     var editando = false
     var heightRow = 50
+    
+    let parser_picker = Parser()
     
     var mapeo = ["Proyecto":"Nombre Proyecto",
                  "Dcto_BG":"BG",
@@ -66,8 +69,13 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
     let date = ["Inicio", "Termino"]
     let textoLargo = ["Bitacora_Cobranza", "causas_y_atrasos"]
     
+    let base_url = UserDefaults.standard.value(forKey: "base_url")!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        
+        
         self.tableView.delegate = self
         self.tableView.dataSource = self
         
@@ -77,11 +85,16 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
                                                name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         hideKeyboardWhenTappedAround()
         
+        
+        parser_picker.mapeo = ["Evaluador","Estatus_Desarrollo","Gestion","Facturado","Jefe_Proyecto","JP_SISTEMAS","Desarrollador"]
+        let Cod_Empresa = UserDefaults.standard.string(forKey: "Cod_Empresa")!
+        parser_picker.parseDatos(URL_: "\(base_url)/getListadoProyectosPorEmpresa?Cod_Empresa=\(Cod_Empresa)")
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
         
-        let url = URL(string: "http://200.111.46.182/WS_MovilProyecto/MovilProyecto.asmx/getListadoProyectosPorCodProyecto?Cod_Proyecto=\(SELECTED_COD_PROYECTO)")
+        let url = URL(string: "\(base_url)/getListadoProyectosPorCodProyecto?Cod_Proyecto=\(SELECTED_COD_PROYECTO)")
         
         let task = URLSession.shared.dataTask(with: url!) {(data, response, error) in
             let parser = XMLParser(data: data!)
@@ -90,9 +103,6 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
             
             DispatchQueue.main.async {
                 self.tableView.reloadData()
-                self.pickerView.delegate = self
-                self.pickerView.dataSource = self
-                self.pickerView.reloadAllComponents()
             }
         }
         
@@ -113,19 +123,7 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
         self.tableView.frame = CGRect(x: CGFloat(0.0), y: self.view.frame.minY + 70, width: self.view.frame.width, height: self.view.frame.height - 70)
     }
     
-    func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        return 1
-    }
     
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return mapeo.count
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        let campo_aux = self.items[row]
-        let dato = campo_aux.value
-        return dato
-    }
     
     func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
         
@@ -155,6 +153,7 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ProyectosCell", for: indexPath) as! DetalleTableViewCell
+        cell.selectionStyle = UITableViewCellSelectionStyle.none
         
         let nomColumna = self.items[indexPath.row].key
         let index = indexPath.row
@@ -162,14 +161,15 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
         var dato = campo_aux.value
         
         if editando {
-            if (texto.contains(nomColumna) || numerico.contains(nomColumna)){
-                if(numerico.contains(nomColumna)){
-                    cell.lblDato.keyboardType = UIKeyboardType.decimalPad
-                }
-                cell.lblDato.isEnabled = true
+            cell.lblDato.isEnabled = true
+            if (numerico.contains(nomColumna)){
+                cell.lblDato.keyboardType = UIKeyboardType.decimalPad
+            }else if (texto.contains(nomColumna)){
+                cell.lblDato.keyboardType = UIKeyboardType.alphabet
             }else {
                 cell.lblDato.isEnabled = false
             }
+            
             cell.lblIdentificacion.textColor = UIColor(red: 150/255, green: 150/255, blue: 150/255, alpha: 1.0)
             cell.lblDato.textColor = UIColor(red: 0, green: 0, blue: 0, alpha: 1.0)
         }else{
@@ -181,11 +181,12 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
             dato = dato.components(separatedBy: " ")[0]
             cell.lblDato.isEnabled = false
         }
+        
+        
         cell.lblDato.text = dato
         cell.lblDato.tag = indexPath.row
         cell.lblDato.delegate = self
         cell.lblIdentificacion.text = self.mapeo[nomColumna]
-        cell.selectionStyle = UITableViewCellSelectionStyle.none
         
         return cell
     }
@@ -198,12 +199,27 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
         
         SELECTED_DATO = cell.lblDato.text!
         SELECTED_TITULO = cell.lblIdentificacion.text!
+        for map in mapeo{
+            if(map.value == SELECTED_TITULO){
+                self.SELECTED_COLNAME = map.key
+            }
+        }
+        
         if (SELECTED_TITULO == "Bitacora" || SELECTED_TITULO == "Control De Gestion" || SELECTED_TITULO == "Nombre Proyecto")
         {
             performSegue(withIdentifier: "DetalleTextoViewController", sender: self)
         }else if(editando){
             if(picker.contains(nomColumna)){
-                mostrarOptionPickerView()
+                self.pickerView.delegate = self
+                self.pickerView.dataSource = self
+                self.pickerView.reloadAllComponents()
+
+                if let index = self.parser_picker.elementos[SELECTED_COLNAME]?.index(of: SELECTED_DATO){
+                    pickerView.selectRow(index, inComponent: 0, animated: true)
+                }
+                
+                
+                self.mostrarOptionPickerView()
             }
             if(date.contains(nomColumna)){
                 mostrarDateView()
@@ -266,8 +282,13 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
     @IBAction func btnSeleccionarPicker(_ sender: Any) {
         ocultarOptionPickerView()
         let cell = self.tableView.cellForRow(at: self.tableView.indexPathForSelectedRow!) as! DetalleTableViewCell
-        cell.lblDato.text = self.items[pickerView.selectedRow(inComponent: 0)].value
-        self.items[self.tableView.indexPathForSelectedRow!.row].value = self.items[pickerView.selectedRow(inComponent: 0)].value
+        for map in mapeo{
+            if(map.value == cell.lblIdentificacion.text){
+                let colName = map.key
+                cell.lblDato.text = self.parser_picker.elementos[colName]?[pickerView.selectedRow(inComponent: 0)]
+                self.items[self.tableView.indexPathForSelectedRow!.row].value = (self.parser_picker.elementos[colName]?[pickerView.selectedRow(inComponent: 0)])!
+            }
+        }
     }
     
     @IBAction func btnCancelarDate(_ sender: Any) {
@@ -296,31 +317,21 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
     
     func mostrarOptionPickerView(){
         let cell = self.tableView.cellForRow(at: self.tableView.indexPathForSelectedRow!) as! DetalleTableViewCell
+        
         let cell_framemaxY = cell.frame.maxY
-        let cell_frameminY = cell.frame.minY
         let tableView_contentOffsetY = tableView.contentOffset.y
         let tableView_frameheight = self.view.frame.height - 70  //tableView.frame.height
-        let minY = (tableView_frameheight - 200 - 50)
-        
-        print(minY)
-        print(cell_frameminY)
-        print(tableView_contentOffsetY)
-        print(tableView_frameheight)
-        
         let scroll = CGFloat(200)
         if(tableView_contentOffsetY > 0){
             if(scroll <= tableView_contentOffsetY){
-                //tableView.contentOffset.y = tableView.contentOffset.y - scroll
                 tableView.contentOffset.y = tableView_frameheight - tableView_contentOffsetY
             }
         }
-        
-        
-        
         let delta = ((tableView_contentOffsetY + tableView_frameheight)-cell_framemaxY)
         if( delta <= 200){
             tableView.contentOffset.y = tableView.contentOffset.y + (200-delta)
         }
+        
         UIView.animate(withDuration: 0.3, animations: {
             self.tableView.frame = CGRect(x: CGFloat(0.0), y: self.view.frame.minY + 70, width: self.view.frame.width, height: self.view.frame.height - self.optionView.frame.height - 65)
             self.optionView.frame = CGRect(x: 0.0, y: self.view.frame.height - self.optionView.frame.height, width: self.view.frame.width, height: self.optionView.frame.height)
@@ -368,4 +379,18 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
         return true
     }
     
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        let cant = parser_picker.elementos[SELECTED_COLNAME]!.count
+        return cant
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        
+        let value = parser_picker.elementos[SELECTED_COLNAME]![row]
+        return value
+    }
 }

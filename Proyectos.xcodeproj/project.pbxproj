@@ -27,6 +27,7 @@
 		B3C71F9A1FFBE9C100FB9895 /* JPSistemasTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3C71F991FFBE9C100FB9895 /* JPSistemasTableViewController.swift */; };
 		B3C71F9E1FFD802200FB9895 /* EmpresasViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3C71F9D1FFD802200FB9895 /* EmpresasViewController.swift */; };
 		B3DF3DDA1FFD831B00F7AE65 /* EmpresasCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3DF3DD91FFD831B00F7AE65 /* EmpresasCollectionViewCell.swift */; };
+		B3F193A7200FD61700360D37 /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3F193A6200FD61600360D37 /* Parser.swift */; };
 		E926FC802007F51C0067BBC3 /* BuscarProyectosTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E926FC7F2007F51C0067BBC3 /* BuscarProyectosTableViewCell.swift */; };
 		E926FC822007F5680067BBC3 /* BuscarProyectosTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E926FC812007F5680067BBC3 /* BuscarProyectosTableViewController.swift */; };
 		E99EFC112007E89100A8F79F /* TarBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E99EFC102007E89100A8F79F /* TarBarViewController.swift */; };
@@ -76,6 +77,7 @@
 		B3C71F991FFBE9C100FB9895 /* JPSistemasTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JPSistemasTableViewController.swift; sourceTree = "<group>"; };
 		B3C71F9D1FFD802200FB9895 /* EmpresasViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmpresasViewController.swift; sourceTree = "<group>"; };
 		B3DF3DD91FFD831B00F7AE65 /* EmpresasCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmpresasCollectionViewCell.swift; sourceTree = "<group>"; };
+		B3F193A6200FD61600360D37 /* Parser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Parser.swift; sourceTree = "<group>"; };
 		E926FC7F2007F51C0067BBC3 /* BuscarProyectosTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuscarProyectosTableViewCell.swift; sourceTree = "<group>"; };
 		E926FC812007F5680067BBC3 /* BuscarProyectosTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuscarProyectosTableViewController.swift; sourceTree = "<group>"; };
 		E99EFC102007E89100A8F79F /* TarBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TarBarViewController.swift; sourceTree = "<group>"; };
@@ -129,6 +131,7 @@
 		B345934E1F857CDE006BC982 /* Proyectos */ = {
 			isa = PBXGroup;
 			children = (
+				B3F193A6200FD61600360D37 /* Parser.swift */,
 				B345935B1F857CDE006BC982 /* Info.plist */,
 				B345934F1F857CDE006BC982 /* AppDelegate.swift */,
 				B3A16FF71FF3F67D0094D7A6 /* funciones.swift */,
@@ -349,6 +352,7 @@
 				B3C71F981FFBE7C900FB9895 /* JPSistemasTableViewCell.swift in Sources */,
 				E926FC822007F5680067BBC3 /* BuscarProyectosTableViewController.swift in Sources */,
 				B34593501F857CDE006BC982 /* AppDelegate.swift in Sources */,
+				B3F193A7200FD61700360D37 /* Parser.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

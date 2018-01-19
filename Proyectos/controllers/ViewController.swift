@@ -21,6 +21,7 @@ class ViewController: UIViewController, XMLParserDelegate {
     let userDefaults = UserDefaults.standard
     var foundCharacters = ""
     var xmlParser: XMLParser!
+    var base_url = ""
     
     var loginSuccess = 0
     override func viewDidAppear(_ animated: Bool) {
@@ -41,6 +42,9 @@ class ViewController: UIViewController, XMLParserDelegate {
         self.view.isHidden = true
         hideKeyboardWhenTappedAround()
         loadingIndicator.isHidden = true
+        base_url = "http://200.111.46.182/WS_MovilProyecto/MovilProyecto.asmx"
+        self.userDefaults.set(base_url, forKey: "base_url")
+        
     }
     
     override func didReceiveMemoryWarning() {
@@ -50,7 +54,7 @@ class ViewController: UIViewController, XMLParserDelegate {
     
     @IBAction func btnIniciarSesion(_ sender: Any) {
         
-        let url = URL(string: "http://200.111.46.182/WS_MovilProyecto/MovilProyecto.asmx/fnValidaLogin?usuario=\(txtUserName.text?.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)! ?? "")&contrasena=\(txtPassword.text?.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)! ?? "")")
+        let url = URL(string: "\(base_url)/fnValidaLogin?usuario=\(txtUserName.text?.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)! ?? "")&contrasena=\(txtPassword.text?.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)! ?? "")")
         
         let task = URLSession.shared.dataTask(with: url!) {(data, response, error) in
             
