@@ -10,9 +10,11 @@ import UIKit
 
 class BuscarProyectosTableViewCell: UITableViewCell {
 
-    @IBOutlet weak var LblIdentificadorCampo: UILabel!
+
     
-    @IBOutlet weak var TxtFiltro: UITextField!
+    @IBOutlet weak var LblFiltro: UILabel!
+    
+    @IBOutlet weak var TxtFiltroBusqueda: UITextField!
     
     override func awakeFromNib() {
         super.awakeFromNib()
