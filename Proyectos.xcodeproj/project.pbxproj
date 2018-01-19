@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		B3215E8F2007AAA800144E63 /* BuscarProyectosViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3215E8E2007AAA700144E63 /* BuscarProyectosViewController.swift */; };
 		B34593501F857CDE006BC982 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B345934F1F857CDE006BC982 /* AppDelegate.swift */; };
 		B34593521F857CDE006BC982 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34593511F857CDE006BC982 /* ViewController.swift */; };
 		B34593551F857CDE006BC982 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B34593531F857CDE006BC982 /* Main.storyboard */; };
@@ -51,7 +50,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		B3215E8E2007AAA700144E63 /* BuscarProyectosViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BuscarProyectosViewController.swift; sourceTree = "<group>"; };
 		B345934C1F857CDE006BC982 /* Proyectos.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Proyectos.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B345934F1F857CDE006BC982 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B34593511F857CDE006BC982 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -179,8 +177,8 @@
 		B3EE7DE22003C64000E35BB2 /* controllers */ = {
 			isa = PBXGroup;
 			children = (
-				B3215E8E2007AAA700144E63 /* BuscarProyectosViewController.swift */,
 				B3ADA12C1FFEB9E20020253D /* DetalleTableViewController.swift */,
+				E926FC812007F5680067BBC3 /* BuscarProyectosTableViewController.swift */,
 				B3ADA12E1FFEC8720020253D /* DetalleTextoViewController.swift */,
 				B3C71F9D1FFD802200FB9895 /* EmpresasViewController.swift */,
 				B345937D1F857DA4006BC982 /* EstadosTableViewController.swift */,
@@ -188,7 +186,6 @@
 				B36676151F868C1600C3CA32 /* ProyectosTableViewController.swift */,
 				B34593511F857CDE006BC982 /* ViewController.swift */,
 				E99EFC102007E89100A8F79F /* TarBarViewController.swift */,
-				E926FC812007F5680067BBC3 /* BuscarProyectosTableViewController.swift */,
 			);
 			path = controllers;
 			sourceTree = "<group>";
@@ -341,7 +338,6 @@
 				B3C71F9E1FFD802200FB9895 /* EmpresasViewController.swift in Sources */,
 				B3ADA12B1FFEB9690020253D /* DetalleTableViewCell.swift in Sources */,
 				B345937E1F857DA4006BC982 /* EstadosTableViewController.swift in Sources */,
-				B3215E8F2007AAA800144E63 /* BuscarProyectosViewController.swift in Sources */,
 				B3DF3DDA1FFD831B00F7AE65 /* EmpresasCollectionViewCell.swift in Sources */,
 				B34593521F857CDE006BC982 /* ViewController.swift in Sources */,
 				B3C71F9A1FFBE9C100FB9895 /* JPSistemasTableViewController.swift in Sources */,
@@ -519,7 +515,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = PJAW6R6Y6U;
+				DEVELOPMENT_TEAM = GDRFHJW59E;
 				INFOPLIST_FILE = Proyectos/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.sistemas.Proyectos;
@@ -534,7 +530,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = PJAW6R6Y6U;
+				DEVELOPMENT_TEAM = GDRFHJW59E;
 				INFOPLIST_FILE = Proyectos/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.sistemas.Proyectos;
