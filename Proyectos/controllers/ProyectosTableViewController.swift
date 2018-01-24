@@ -85,7 +85,7 @@ class ProyectosTableViewController: UITableViewController, XMLParserDelegate, UI
                 parser.parse()
                 
                 DispatchQueue.main.async {
-                    self.view.isUserInteractionEnabled = true
+                    
                     UIView.animate(withDuration: 0.2, animations: {
                         //self.effectView.alpha = 0.0
                         self.tableView.reloadData()
@@ -101,12 +101,12 @@ class ProyectosTableViewController: UITableViewController, XMLParserDelegate, UI
                             (value: Bool) in
                         })*/
                     })
-
+                    self.view.isUserInteractionEnabled = true
                 }
             }
             else{
                 DispatchQueue.main.async {
-                    self.view.isUserInteractionEnabled = true
+                    
                     self.tableView.reloadData()
                     self.effectView.alpha = 0.0
                     self.refreshControl?.endRefreshing()
@@ -118,7 +118,7 @@ class ProyectosTableViewController: UITableViewController, XMLParserDelegate, UI
                     let alert = UIAlertController(title: "Error", message: "Problemas de conexión", preferredStyle: UIAlertControllerStyle.alert)
                     alert.addAction(UIAlertAction(title: "Reintentar", style: UIAlertActionStyle.default, handler: nil))
                     self.present(alert, animated: true, completion: nil)
-                    
+                 self.view.isUserInteractionEnabled = true
                 }
             }
             
