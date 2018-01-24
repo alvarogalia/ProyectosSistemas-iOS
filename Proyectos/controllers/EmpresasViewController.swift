@@ -104,13 +104,22 @@ class EmpresasViewController: UIViewController, UICollectionViewDelegate, UIColl
         let url = URL(string: "http://200.111.46.182/WS_MovilProyecto/MovilProyecto.asmx/getListadoEmpresas")
         
         let task = URLSession.shared.dataTask(with: url!) {(data, response, error) in
-            
-            let parser = XMLParser(data: data!)
-            parser.delegate = (self as XMLParserDelegate)
-            parser.parse()
-            
-            DispatchQueue.main.async {
-                self.Collection.reloadData()
+            if(data != nil){
+                let parser = XMLParser(data: data!)
+                parser.delegate = (self as XMLParserDelegate)
+                parser.parse()
+                
+                DispatchQueue.main.async {
+                    self.Collection.reloadData()
+                }
+            }
+            else{
+                DispatchQueue.main.async {
+                    self.Collection.reloadData()
+                    let alert = UIAlertController(title: "Error", message: "Problemas de conexión", preferredStyle: UIAlertControllerStyle.alert)
+                    alert.addAction(UIAlertAction(title: "Reintentar", style: UIAlertActionStyle.default, handler: nil))
+                    self.present(alert, animated: true, completion: nil)
+                }
             }
         }
         

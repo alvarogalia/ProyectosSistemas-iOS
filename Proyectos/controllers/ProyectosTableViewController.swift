@@ -8,12 +8,20 @@
 
 import UIKit
 
+
+
 class Proyecto {
-    var BG = ""
-    var Cod_Proyecto = ""
     var Proyecto = ""
-    var Total_UF = ""
+    var Dcto_BG = ""
     var Estatus_Desarrollo = ""
+    var Evaluador = ""
+    var Gestion = ""
+    var Facturado = ""
+    var Jefe_Proyecto = ""
+    var JP_SISTEMAS = ""
+    var Cod_Proyecto = ""
+    var Total_UF = ""
+   
 }
 
 class ProyectosTableViewController: UITableViewController, XMLParserDelegate, UISearchBarDelegate {
@@ -28,6 +36,7 @@ class ProyectosTableViewController: UITableViewController, XMLParserDelegate, UI
     var SELECTED_COD_PROYECTO = "";
     var SELECTED_JP_CLIENTES = "";
     var url_ = ""
+    var ARRAY_FILTRO : [String:String] = [:]
     
     @IBOutlet weak var searchBar: UISearchBar!
     
@@ -126,6 +135,84 @@ class ProyectosTableViewController: UITableViewController, XMLParserDelegate, UI
         //self.searchBar.alpha = 0.0
     }
     
+    func parserDidEndDocument(_ parser: XMLParser) {
+        if (self.ARRAY_FILTRO.count > 0){
+            
+            for element in ARRAY_FILTRO{
+                
+                let stringArr = element.value.trim().lowercased().folding(options: .diacriticInsensitive, locale: nil).components(separatedBy: " ")
+                let cantidad = stringArr.count
+                
+                items = items.filter({ (Proyecto) -> Bool in
+                    var encontrado = 0
+                    if(element.key == "Proyecto"){
+                        for item in stringArr{
+                            if(Proyecto.Proyecto.lowercased().folding(options: .diacriticInsensitive, locale: NSLocale.current ).contains(item)){
+                                encontrado = encontrado + 1
+                            }
+                        }
+                        
+                    }
+                    if(element.key == "Dcto_BG"){
+                        for item in stringArr{
+                            if(Proyecto.Dcto_BG.lowercased().folding(options: .diacriticInsensitive, locale: NSLocale.current ).contains(item)){
+                                encontrado = encontrado + 1
+                            }
+                        }
+                    }
+                    if(element.key == "Estatus_Desarrollo"){
+                        for item in stringArr{
+                            if(Proyecto.Estatus_Desarrollo.lowercased().folding(options: .diacriticInsensitive, locale: NSLocale.current ).contains(item)){
+                                encontrado = encontrado + 1
+                            }
+                        }
+                    }
+                    if(element.key == "Evaluador"){
+                        for item in stringArr{
+                            if(Proyecto.Evaluador.lowercased().folding(options: .diacriticInsensitive, locale: NSLocale.current ).contains(item)){
+                                encontrado = encontrado + 1
+                            }
+                        }
+                    }
+                    if(element.key == "Gestion"){
+                        for item in stringArr{
+                            if(Proyecto.Gestion.lowercased().folding(options: .diacriticInsensitive, locale: NSLocale.current ).contains(item)){
+                                encontrado = encontrado + 1
+                            }
+                        }
+                    }
+                    if(element.key == "Facturado"){
+                        for item in stringArr{
+                            if(Proyecto.Facturado.lowercased().folding(options: .diacriticInsensitive, locale: NSLocale.current ).contains(item)){
+                                encontrado = encontrado + 1
+                            }
+                        }
+                    }
+                    if(element.key == "Jefe_Proyecto"){
+                        for item in stringArr{
+                            if(Proyecto.Jefe_Proyecto.lowercased().folding(options: .diacriticInsensitive, locale: NSLocale.current ).contains(item)){
+                                encontrado = encontrado + 1
+                            }
+                        }
+                    }
+                    if(element.key == "JP_SISTEMAS"){
+                        for item in stringArr{
+                            if(Proyecto.JP_SISTEMAS.lowercased().folding(options: .diacriticInsensitive, locale: NSLocale.current ).contains(item)){
+                                encontrado = encontrado + 1
+                            }
+                        }
+                    }
+                    
+                    if(cantidad == encontrado){
+                        return true
+                    }else{
+                        return false
+                    }
+                })
+            }
+            
+        }
+    }
     
     func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
         
@@ -139,22 +226,48 @@ class ProyectosTableViewController: UITableViewController, XMLParserDelegate, UI
             self.item.Total_UF = "UF \(self.foundCharacters)"
         }
         if elementName == "Dcto_BG" {
-            self.item.BG = self.foundCharacters
+            self.item.Dcto_BG = self.foundCharacters
         }
         if elementName == "Estatus_Desarrollo"{
             self.item.Estatus_Desarrollo = self.foundCharacters
         }
+        if elementName == "Evaluador"{
+            self.item.Evaluador = self.foundCharacters
+        }
+        if elementName == "Gestion"{
+            self.item.Gestion = self.foundCharacters
+        }
+        if elementName == "Facturado"{
+            self.item.Facturado = self.foundCharacters
+        }
+        if elementName == "Jefe_Proyecto"{
+            self.item.Jefe_Proyecto = self.foundCharacters
+        }
+        if elementName == "JP_SISTEMAS"{
+            self.item.JP_SISTEMAS = self.foundCharacters
+        }
+       
         
         if elementName == "Proyectos" {
             let tempItem = Proyecto();
-            tempItem.Cod_Proyecto = self.item.Cod_Proyecto
+            
+            
             tempItem.Proyecto = self.item.Proyecto
-            tempItem.Total_UF = self.item.Total_UF
+            tempItem.Dcto_BG = self.item.Dcto_BG
             tempItem.Estatus_Desarrollo = self.item.Estatus_Desarrollo
-            if(self.item.BG == ""){
-                tempItem.BG = "Sin-BG"
+            tempItem.Evaluador = self.item.Evaluador
+            tempItem.Gestion = self.item.Gestion
+            tempItem.Facturado = self.item.Facturado
+            tempItem.Jefe_Proyecto = self.item.Jefe_Proyecto
+            tempItem.JP_SISTEMAS = self.item.JP_SISTEMAS
+            tempItem.Cod_Proyecto = self.item.Cod_Proyecto
+            tempItem.Total_UF = self.item.Total_UF
+            
+            
+            if(self.item.Dcto_BG == ""){
+                tempItem.Dcto_BG = "Sin-BG"
             }else{
-                tempItem.BG = self.item.BG
+                tempItem.Dcto_BG = self.item.Dcto_BG
             }
             self.items_resp.append(tempItem)
             self.items.append(tempItem)
@@ -179,7 +292,7 @@ class ProyectosTableViewController: UITableViewController, XMLParserDelegate, UI
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "DetalleCell", for: indexPath) as! DetalleProyectoTableViewCell
         cell.lblDesc.text = items[indexPath.row].Proyecto
-        cell.lblIDProyecto.text = items[indexPath.row].BG
+        cell.lblIDProyecto.text = items[indexPath.row].Dcto_BG
         cell.codProyecto.text = items[indexPath.row].Cod_Proyecto
         cell.lblEmpresa.text = items[indexPath.row].Estatus_Desarrollo
         
@@ -204,7 +317,7 @@ class ProyectosTableViewController: UITableViewController, XMLParserDelegate, UI
     
     
     override func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        print(self.tableView.contentOffset.y)
+       
         /*
          if (scrollView.contentOffset.y >= (scrollView.contentSize.height - scrollView.frame.size.height)) {
          UIView.animate(withDuration: 0.5, animations: {
@@ -277,17 +390,21 @@ class ProyectosTableViewController: UITableViewController, XMLParserDelegate, UI
                 let cantidad = stringArr.count
                 var encontrado = 0
                 for item in stringArr{
-                    if(Proyecto.BG.lowercased().folding(options: .diacriticInsensitive, locale: .current).contains(item)){
+                    if(Proyecto.Dcto_BG.lowercased().folding(options: .diacriticInsensitive, locale: .current).contains(item)){
                         encontrado = encontrado + 1
                     }
                 }
                 if(cantidad == encontrado){
+                    for proyecto in items_proyecto{
+                        if(Proyecto.Cod_Proyecto == proyecto.Cod_Proyecto){
+                            return false
+                        }
+                    }
                     return true
                 }else{
                     return false
                 }
             })
-            
             
             items.removeAll()
             
