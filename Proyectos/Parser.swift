@@ -13,7 +13,7 @@ class Parser: XMLParser, XMLParserDelegate {
     var mapeo : [String] = []
     var elementos : [String:[String]] = [:]
     private var foundCharacters = ""
-    func parseDatos(URL_ : String){
+    func parseDatos(URL_ : String, Vista: UIViewController){
         let url = URL(string: URL_)
         elementos = [:]
         for element in mapeo{
@@ -21,9 +21,21 @@ class Parser: XMLParser, XMLParserDelegate {
         }
         
         let task = URLSession.shared.dataTask(with: url!) {(data, response, error) in
+            
             let parser = XMLParser(data: data!)
             parser.delegate = self
             parser.parse()
+            
+            DispatchQueue.main.async {
+                if let vista = Vista as? BuscarProyectosTableViewController{
+                    UIView.animate(withDuration: 0.2, animations: {
+                        vista.effectView.alpha = 0.0
+                    }, completion:{ (finished: Bool) in
+                        vista.effectView.removeFromSuperview()
+                        vista.view.isUserInteractionEnabled = true
+                    })
+                }
+            }
         }
         
         task.resume()

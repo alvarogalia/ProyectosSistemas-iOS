@@ -54,6 +54,7 @@ class JPSistemasTableViewController: UITableViewController, XMLParserDelegate {
         
         effectView = activityIndicator(title: "Cargando Información", view: self.tableView)
         let url = URL(string: url_)
+        self.view.isUserInteractionEnabled = false
         let task = URLSession.shared.dataTask(with: url!) {(data, response, error) in
             self.items.removeAll()
             
@@ -67,6 +68,7 @@ class JPSistemasTableViewController: UITableViewController, XMLParserDelegate {
                 parser.parse()
                 
                 DispatchQueue.main.async {
+                    self.view.isUserInteractionEnabled = true
                     self.tableView.reloadData()
                     UIView.animate(withDuration: 0.2, animations: {
                         self.effectView.alpha = 0.0
@@ -81,6 +83,7 @@ class JPSistemasTableViewController: UITableViewController, XMLParserDelegate {
             else{
                 
                 DispatchQueue.main.async {
+                    self.view.isUserInteractionEnabled = true
                     self.tableView.reloadData()
                     self.effectView.alpha = 0.0
                     self.refreshControl?.endRefreshing()
