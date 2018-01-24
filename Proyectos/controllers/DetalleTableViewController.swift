@@ -88,7 +88,7 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
         
         parser_picker.mapeo = ["Evaluador","Estatus_Desarrollo","Gestion","Facturado","Jefe_Proyecto","JP_SISTEMAS","Desarrollador"]
         let Cod_Empresa = UserDefaults.standard.string(forKey: "Cod_Empresa")!
-        parser_picker.parseDatos(URL_: "\(base_url)/getListadoProyectosPorEmpresa?Cod_Empresa=\(Cod_Empresa)")
+        parser_picker.parseDatos(URL_: "\(base_url)/getListadoProyectosPorEmpresa?Cod_Empresa=\(Cod_Empresa)",Vista: self)
         
     }
     

@@ -67,7 +67,7 @@ class EstadosTableViewController: UITableViewController, XMLParserDelegate {
     @objc func loadURLandParse(){
         effectView = activityIndicator(title: "Cargando Información", view: self.tableView)
         let url = URL(string: url_)
-        
+        self.view.isUserInteractionEnabled = false
         let task = URLSession.shared.dataTask(with: url!) {(data, response, error) in
             
             self.items.removeAll()
@@ -80,6 +80,7 @@ class EstadosTableViewController: UITableViewController, XMLParserDelegate {
                 parser.parse()
                 
                 DispatchQueue.main.async {
+                    self.view.isUserInteractionEnabled = true
                     UIView.animate(withDuration: 0.2, animations: {
                         self.effectView.alpha = 0.0
                         self.refreshControl?.endRefreshing()
@@ -93,6 +94,7 @@ class EstadosTableViewController: UITableViewController, XMLParserDelegate {
             else{
                 
                 DispatchQueue.main.async {
+                    self.view.isUserInteractionEnabled = true
                     self.tableView.reloadData()
                     self.effectView.alpha = 0.0
                     self.refreshControl?.endRefreshing()

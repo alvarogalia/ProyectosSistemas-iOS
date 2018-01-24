@@ -27,7 +27,8 @@ class BuscarProyectosTableViewController: UIViewController, UIPickerViewDelegate
     let picker = ["Evaluador", "Estado", "Gestion", "Facturado", "Jp Cliente", "Jp Sistemas"]
     let parser_picker = Parser()
     let base_url = UserDefaults.standard.value(forKey: "base_url")!
-    
+    var effectView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
+
     var foundCharacters = "";
     var SELECTED_COD_PROYECTO = ""
     var SELECTED_TITULO = ""
@@ -147,10 +148,7 @@ class BuscarProyectosTableViewController: UIViewController, UIPickerViewDelegate
         
         hideKeyboardWhenTappedAround()
         
-        parser_picker.mapeo = ["Evaluador","Estatus_Desarrollo","Gestion","Facturado","Jefe_Proyecto","JP_SISTEMAS","Desarrollador"]
         
-        let Cod_Empresa = UserDefaults.standard.string(forKey: "Cod_Empresa")!
-        parser_picker.parseDatos(URL_: "\(base_url)/getListadoProyectosPorEmpresa?Cod_Empresa=\(Cod_Empresa)")
         
     }
     
@@ -365,6 +363,16 @@ class BuscarProyectosTableViewController: UIViewController, UIPickerViewDelegate
         self.TableViewBuscarProyectos.reloadData()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        parser_picker.mapeo = ["Evaluador","Estatus_Desarrollo","Gestion","Facturado","Jefe_Proyecto","JP_SISTEMAS","Desarrollador"]
+        
+        let Cod_Empresa = UserDefaults.standard.string(forKey: "Cod_Empresa")!
+        
+        self.effectView = activityIndicator(title: "Cargando Información", view: self.view)
+        self.view.addSubview(self.effectView)
+        self.view.isUserInteractionEnabled = false
+        parser_picker.parseDatos(URL_: "\(base_url)/getListadoProyectosPorEmpresa?Cod_Empresa=\(Cod_Empresa)",Vista: self)
+    }
     
 
     override func didReceiveMemoryWarning() {

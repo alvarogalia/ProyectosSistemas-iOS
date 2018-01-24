@@ -73,6 +73,7 @@ class ProyectosTableViewController: UITableViewController, XMLParserDelegate, UI
     @objc func loadURLandParse(){
         effectView = activityIndicator(title: "Cargando Información", view: self.tableView)
         let url = URL(string: url_)
+        self.view.isUserInteractionEnabled = false
         let task = URLSession.shared.dataTask(with: url!) {(data, response, error) in
             
             self.items.removeAll()
@@ -84,6 +85,7 @@ class ProyectosTableViewController: UITableViewController, XMLParserDelegate, UI
                 parser.parse()
                 
                 DispatchQueue.main.async {
+                    self.view.isUserInteractionEnabled = true
                     UIView.animate(withDuration: 0.2, animations: {
                         //self.effectView.alpha = 0.0
                         self.tableView.reloadData()
@@ -91,27 +93,32 @@ class ProyectosTableViewController: UITableViewController, XMLParserDelegate, UI
                     }, completion:{ (finished: Bool) in
                         self.effectView.removeFromSuperview()
                         self.actualizando = false
+                        
+
                        /* UIView.animate(withDuration: 0.4, animations: {
                             self.tableView.contentOffset.y = -8.0;
                         }, completion: {
                             (value: Bool) in
                         })*/
                     })
+
                 }
             }
             else{
                 DispatchQueue.main.async {
-                    
+                    self.view.isUserInteractionEnabled = true
                     self.tableView.reloadData()
                     self.effectView.alpha = 0.0
                     self.refreshControl?.endRefreshing()
                     self.effectView.removeFromSuperview()
+                    
                     //self.tableView.reloadData()
                     self.actualizando = false
                     self.tableView.contentOffset.y = 0.0
                     let alert = UIAlertController(title: "Error", message: "Problemas de conexión", preferredStyle: UIAlertControllerStyle.alert)
                     alert.addAction(UIAlertAction(title: "Reintentar", style: UIAlertActionStyle.default, handler: nil))
                     self.present(alert, animated: true, completion: nil)
+                    
                 }
             }
             
