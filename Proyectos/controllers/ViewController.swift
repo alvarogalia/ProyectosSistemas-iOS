@@ -86,7 +86,7 @@ class ViewController: UIViewController, XMLParserDelegate {
                     self.loadingIndicator.stopAnimating()
                     self.loadingIndicator.isHidden = true
                     
-                    let alert = UIAlertController(title: "Error", message: "Problemas de conexió", preferredStyle: UIAlertControllerStyle.alert)
+                    let alert = UIAlertController(title: "Error", message: "Problemas de conexión", preferredStyle: UIAlertControllerStyle.alert)
                     alert.addAction(UIAlertAction(title: "Reintentar", style: UIAlertActionStyle.default, handler: nil))
                     self.present(alert, animated: true, completion: nil)
                     

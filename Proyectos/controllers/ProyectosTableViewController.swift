@@ -21,16 +21,17 @@ class Proyecto {
     var JP_SISTEMAS = ""
     var Cod_Proyecto = ""
     var Total_UF = ""
-   
 }
 
 class ProyectosTableViewController: UITableViewController, XMLParserDelegate, UISearchBarDelegate {
     
     var items = [Proyecto]();
     var items_resp = [Proyecto]();
+    var items_filtro = [Proyecto]();
     var item = Proyecto();
     var foundCharacters = "";
     
+    var Parche = false
     var SELECTED_JP_SISTEMAS = "";
     var SELECTED_ESTADO = "";
     var SELECTED_COD_PROYECTO = "";
@@ -38,13 +39,17 @@ class ProyectosTableViewController: UITableViewController, XMLParserDelegate, UI
     var url_ = ""
     var ARRAY_FILTRO : [String:String] = [:]
     
+    var actualizando = false
+    var effectView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
+    
+    
     @IBOutlet weak var searchBar: UISearchBar!
     
-    var effectView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
     
     override func viewWillAppear(_ animated: Bool) {
         
         let Cod_Empresa = UserDefaults.standard.string(forKey: "Cod_Empresa")!
+        
         
         if(self.SELECTED_ESTADO != ""){
             if(self.SELECTED_JP_SISTEMAS != ""){
@@ -66,14 +71,17 @@ class ProyectosTableViewController: UITableViewController, XMLParserDelegate, UI
         if(items.count == 0 && actualizando == false){
             loadURLandParse()
         }
+        
+        
+        
+        
     }
-    var actualizando = false
     
     
     @objc func loadURLandParse(){
         effectView = activityIndicator(title: "Cargando Información", view: self.tableView)
-        let url = URL(string: url_)
         self.view.isUserInteractionEnabled = false
+        let url = URL(string: url_)
         let task = URLSession.shared.dataTask(with: url!) {(data, response, error) in
             
             self.items.removeAll()
@@ -87,21 +95,21 @@ class ProyectosTableViewController: UITableViewController, XMLParserDelegate, UI
                 DispatchQueue.main.async {
                     
                     UIView.animate(withDuration: 0.2, animations: {
-                        //self.effectView.alpha = 0.0
                         self.tableView.reloadData()
                         self.refreshControl?.endRefreshing()
                     }, completion:{ (finished: Bool) in
                         self.effectView.removeFromSuperview()
                         self.actualizando = false
                         
-
-                       /* UIView.animate(withDuration: 0.4, animations: {
-                            self.tableView.contentOffset.y = -8.0;
-                        }, completion: {
-                            (value: Bool) in
-                        })*/
+                        
+                        /* UIView.animate(withDuration: 0.4, animations: {
+                         self.tableView.contentOffset.y = -8.0;
+                         }, completion: {
+                         (value: Bool) in
+                         })*/
                     })
                     self.view.isUserInteractionEnabled = true
+                    
                 }
             }
             else{
@@ -118,7 +126,8 @@ class ProyectosTableViewController: UITableViewController, XMLParserDelegate, UI
                     let alert = UIAlertController(title: "Error", message: "Problemas de conexión", preferredStyle: UIAlertControllerStyle.alert)
                     alert.addAction(UIAlertAction(title: "Reintentar", style: UIAlertActionStyle.default, handler: nil))
                     self.present(alert, animated: true, completion: nil)
-                 self.view.isUserInteractionEnabled = true
+                    self.view.isUserInteractionEnabled = true
+                    
                 }
             }
             
@@ -132,15 +141,27 @@ class ProyectosTableViewController: UITableViewController, XMLParserDelegate, UI
             self.actualizando = true
             task.resume()
         }
+        
     }
+    
+    
+    
     
     override func viewDidLoad() {
         self.tableView.reloadData()
         searchBar.delegate = self
-        
-        //searchController.delegate = (self as! UISearchControllerDelegate)
-        //self.searchBar.alpha = 0.0
     }
+    
+    
+    
+    
+    override func viewDidAppear(_ animated: Bool) {
+        self.tableView.reloadData()
+    }
+    
+    
+    
+    
     
     func parserDidEndDocument(_ parser: XMLParser) {
         if (self.ARRAY_FILTRO.count > 0){
@@ -154,7 +175,7 @@ class ProyectosTableViewController: UITableViewController, XMLParserDelegate, UI
                     var encontrado = 0
                     if(element.key == "Proyecto"){
                         for item in stringArr{
-                            if(Proyecto.Proyecto.lowercased().folding(options: .diacriticInsensitive, locale: NSLocale.current ).contains(item)){
+                            if(Proyecto.Proyecto.lowercased().folding(options: .diacriticInsensitive, locale: NSLocale.current ).contains(item) && element.value == Proyecto.Proyecto){
                                 encontrado = encontrado + 1
                             }
                         }
@@ -162,64 +183,74 @@ class ProyectosTableViewController: UITableViewController, XMLParserDelegate, UI
                     }
                     if(element.key == "Dcto_BG"){
                         for item in stringArr{
-                            if(Proyecto.Dcto_BG.lowercased().folding(options: .diacriticInsensitive, locale: NSLocale.current ).contains(item)){
+                            if(Proyecto.Dcto_BG.lowercased().folding(options: .diacriticInsensitive, locale: NSLocale.current ).contains(item) && element.value == Proyecto.Dcto_BG){
                                 encontrado = encontrado + 1
                             }
                         }
                     }
                     if(element.key == "Estatus_Desarrollo"){
                         for item in stringArr{
-                            if(Proyecto.Estatus_Desarrollo.lowercased().folding(options: .diacriticInsensitive, locale: NSLocale.current ).contains(item)){
+                            if(Proyecto.Estatus_Desarrollo.lowercased().folding(options: .diacriticInsensitive, locale: NSLocale.current ).contains(item) && element.value == Proyecto.Estatus_Desarrollo){
                                 encontrado = encontrado + 1
                             }
                         }
                     }
                     if(element.key == "Evaluador"){
                         for item in stringArr{
-                            if(Proyecto.Evaluador.lowercased().folding(options: .diacriticInsensitive, locale: NSLocale.current ).contains(item)){
+                            if(Proyecto.Evaluador.lowercased().folding(options: .diacriticInsensitive, locale: NSLocale.current ).contains(item) && element.value == Proyecto.Evaluador){
                                 encontrado = encontrado + 1
                             }
                         }
                     }
                     if(element.key == "Gestion"){
                         for item in stringArr{
-                            if(Proyecto.Gestion.lowercased().folding(options: .diacriticInsensitive, locale: NSLocale.current ).contains(item)){
+                            if(Proyecto.Gestion.lowercased().folding(options: .diacriticInsensitive, locale: NSLocale.current ).contains(item) && element.value == Proyecto.Gestion){
                                 encontrado = encontrado + 1
                             }
                         }
                     }
                     if(element.key == "Facturado"){
                         for item in stringArr{
-                            if(Proyecto.Facturado.lowercased().folding(options: .diacriticInsensitive, locale: NSLocale.current ).contains(item)){
+                            if(Proyecto.Facturado.lowercased().folding(options: .diacriticInsensitive, locale: NSLocale.current ).contains(item) && element.value == Proyecto.Facturado){
                                 encontrado = encontrado + 1
                             }
                         }
                     }
                     if(element.key == "Jefe_Proyecto"){
                         for item in stringArr{
-                            if(Proyecto.Jefe_Proyecto.lowercased().folding(options: .diacriticInsensitive, locale: NSLocale.current ).contains(item)){
+                            if(Proyecto.Jefe_Proyecto.lowercased().folding(options: .diacriticInsensitive, locale: NSLocale.current ).contains(item) && element.value == Proyecto.Jefe_Proyecto){
                                 encontrado = encontrado + 1
                             }
                         }
                     }
                     if(element.key == "JP_SISTEMAS"){
                         for item in stringArr{
-                            if(Proyecto.JP_SISTEMAS.lowercased().folding(options: .diacriticInsensitive, locale: NSLocale.current ).contains(item)){
+                            if(Proyecto.JP_SISTEMAS.lowercased().folding(options: .diacriticInsensitive, locale: NSLocale.current ).contains(item) && element.value == Proyecto.JP_SISTEMAS){
                                 encontrado = encontrado + 1
                             }
                         }
                     }
                     
+                    
+                    
                     if(cantidad == encontrado){
+                        
                         return true
                     }else{
                         return false
                     }
                 })
+                
+                items_resp = items
             }
             
         }
+        
     }
+    
+    
+    
+    
     
     func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
         
@@ -253,7 +284,7 @@ class ProyectosTableViewController: UITableViewController, XMLParserDelegate, UI
         if elementName == "JP_SISTEMAS"{
             self.item.JP_SISTEMAS = self.foundCharacters
         }
-       
+        
         
         if elementName == "Proyectos" {
             let tempItem = Proyecto();
@@ -276,21 +307,16 @@ class ProyectosTableViewController: UITableViewController, XMLParserDelegate, UI
             }else{
                 tempItem.Dcto_BG = self.item.Dcto_BG
             }
+            
             self.items_resp.append(tempItem)
             self.items.append(tempItem)
+            
         }
         
         self.foundCharacters = ""
     }
     
-    func parser(_ parser: XMLParser, foundCharacters string: String) {
-        let value = string.trim();
-        if( value != "\n"){
-            self.foundCharacters += value;
-        }else{
-            self.foundCharacters = ""
-        }
-    }
+    
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return items.count
@@ -298,76 +324,34 @@ class ProyectosTableViewController: UITableViewController, XMLParserDelegate, UI
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "DetalleCell", for: indexPath) as! DetalleProyectoTableViewCell
+        
         cell.lblDesc.text = items[indexPath.row].Proyecto
         cell.lblIDProyecto.text = items[indexPath.row].Dcto_BG
         cell.codProyecto.text = items[indexPath.row].Cod_Proyecto
         cell.lblEmpresa.text = items[indexPath.row].Estatus_Desarrollo
         
+        
+        
         return cell
     }
     
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let cell = tableView.cellForRow(at: indexPath) as! DetalleProyectoTableViewCell
-        SELECTED_COD_PROYECTO = cell.codProyecto.text!
-        self.view.endEditing(true)
-        performSegue(withIdentifier: "DetalleProyectosSegue", sender: self)
-    }
-    
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 80
-    }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        let destination = segue.destination as! DetalleTableViewController
-        destination.SELECTED_COD_PROYECTO = SELECTED_COD_PROYECTO
-    }
     
     
-    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
-       
-        /*
-         if (scrollView.contentOffset.y >= (scrollView.contentSize.height - scrollView.frame.size.height)) {
-         UIView.animate(withDuration: 0.5, animations: {
-         self.searchBar.alpha = 0.0
-         }, completion: {
-         (value: Bool) in
-         })
-         }
-         
-         if (scrollView.contentOffset.y <= 0){
-         UIView.animate(withDuration: 0.5, animations: {
-         self.searchBar.alpha = 1.0
-         }, completion: {
-         (value: Bool) in
-         })
-         }
-         
-         if (scrollView.contentOffset.y > 0 && scrollView.contentOffset.y < (scrollView.contentSize.height - scrollView.frame.size.height)){
-         UIView.animate(withDuration: 0.5, animations: {
-         self.searchBar.alpha = 0.0
-         }, completion: {
-         (value: Bool) in
-         })
-         }*/
-    }
     
     
-    //------------------------------------------------------------------------------------------//
     
     
+    //................ SEARCH BAR .................//
     
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        //items_resp = items
+        
         if searchText == "" {
             items = items_resp
-            
         }
         else{
             
-            //let CambioString = searchText.folding(options: .diacriticInsensitive, locale: nil)
-            //print(CambioString)
-            
-            //loadURLandParse()
             var items_proyecto = items_resp
             var items_BG = items_resp
             
@@ -376,9 +360,7 @@ class ProyectosTableViewController: UITableViewController, XMLParserDelegate, UI
                 let cantidad = stringArr.count
                 var encontrado = 0
                 
-                for item in stringArr{
-                    
-                    
+                for item in stringArr {
                     if(Proyecto.Proyecto.lowercased().folding(options: .diacriticInsensitive, locale: NSLocale.current ).contains(item)){
                         
                         encontrado = encontrado + 1
@@ -421,28 +403,82 @@ class ProyectosTableViewController: UITableViewController, XMLParserDelegate, UI
             for item_x in items_BG {
                 items.append(item_x)
             }
-            
         }
         
         self.tableView.reloadData()
+        
     }
+    
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        self.view.endEditing(true)
+        self.tableView.contentOffset.y = 0.0;
+        items = items_resp
+        self.tableView.reloadData()
+        searchBar.text = ""
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    ////////////////////////////////////////////////////////////////////////
+    
+    
     
     override func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         self.view.endEditing(true)
     }
     
-    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        self.view.endEditing(true)
-        //self.searchBar.alpha = 0.0
-        self.tableView.contentOffset.y = 0.0;
-        //let cgrect = CGRect(x: self.searchBar.frame.minX, y: self.searchBar.frame.minY, width: self.view.frame.width, height: 0.0)
-        //self.searchBar.frame = cgrect
+    
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
-        items = items_resp
-        self.tableView.reloadData()
         
-        searchBar.text = ""
     }
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 80
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let destination = segue.destination as! DetalleTableViewController
+        destination.SELECTED_COD_PROYECTO = SELECTED_COD_PROYECTO
+    }
+    
+    func parser(_ parser: XMLParser, foundCharacters string: String) {
+        let value = string.trim();
+        if( value != "\n"){
+            self.foundCharacters += value;
+        }else{
+            self.foundCharacters = ""
+        }
+    }
+    
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let cell = tableView.cellForRow(at: indexPath) as! DetalleProyectoTableViewCell
+        SELECTED_COD_PROYECTO = cell.codProyecto.text!
+        self.view.endEditing(true)
+        performSegue(withIdentifier: "DetalleProyectosSegue", sender: self)
+    }
+    
+    
     
 }
 

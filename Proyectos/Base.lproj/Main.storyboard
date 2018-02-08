@@ -276,7 +276,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5es-dg-85z" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="433" y="199"/>
+            <point key="canvasLocation" x="377" y="-10"/>
         </scene>
         <!--Proyectos-->
         <scene sceneID="60J-HE-lc4">
@@ -382,7 +382,7 @@
                     </connections>
                 </searchDisplayController>
             </objects>
-            <point key="canvasLocation" x="2051" y="1090"/>
+            <point key="canvasLocation" x="1251" y="1433"/>
         </scene>
         <!--Empresas-->
         <scene sceneID="hac-MO-unN">
@@ -710,7 +710,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Oiq-2r-rxH" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="171" y="1951"/>
+            <point key="canvasLocation" x="431" y="2336"/>
         </scene>
         <!--Detalle Table View Controller-->
         <scene sceneID="S53-ZY-OmM">
@@ -805,6 +805,7 @@
                                         </connections>
                                     </button>
                                 </subviews>
+                                <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <constraints>
                                     <constraint firstItem="cN6-h9-dbJ" firstAttribute="leading" secondItem="sAh-Gg-xXw" secondAttribute="leading" id="2jZ-fO-2eg"/>
                                     <constraint firstAttribute="trailing" secondItem="mD6-W6-klw" secondAttribute="trailing" constant="8" id="6rt-8M-CTq"/>
@@ -859,6 +860,7 @@
                                         </connections>
                                     </button>
                                 </subviews>
+                                <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <constraints>
                                     <constraint firstItem="4aE-VL-mXG" firstAttribute="leading" secondItem="cAb-2T-NfV" secondAttribute="leading" constant="8" id="6Qw-pw-m9v"/>
                                     <constraint firstAttribute="trailing" secondItem="GOs-l3-AIU" secondAttribute="trailing" id="DOS-hC-PGX"/>
@@ -889,10 +891,10 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DuT-cn-qZW">
-                                        <rect key="frame" x="262" y="27.5" width="50" height="30"/>
+                                        <rect key="frame" x="233" y="28" width="79" height="30"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="30" id="BSU-SP-9gw"/>
-                                            <constraint firstAttribute="width" constant="50" id="dUK-RF-sGI"/>
+                                            <constraint firstAttribute="width" constant="79" id="dUK-RF-sGI"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <state key="normal" title="Editar">
@@ -939,12 +941,12 @@
                         <outlet property="optionView" destination="sAh-Gg-xXw" id="aD1-WZ-a6W"/>
                         <outlet property="pickerView" destination="cN6-h9-dbJ" id="HH9-1M-ljc"/>
                         <outlet property="tableView" destination="gBf-o7-cfk" id="j3Y-kb-tVo"/>
-                        <segue destination="VEQ-P3-HYF" kind="show" identifier="DetalleTextoViewController" id="Ngc-wb-g3Z"/>
+                        <segue destination="VEQ-P3-HYF" kind="presentation" identifier="DetalleTextoViewController" id="Ngc-wb-g3Z"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="CwB-WQ-V9q" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3030" y="1090"/>
+            <point key="canvasLocation" x="2312" y="1433"/>
         </scene>
         <!--Vista Detallada-->
         <scene sceneID="n3I-WV-U5B">
@@ -972,7 +974,7 @@
                                             <constraint firstAttribute="height" constant="30" id="OBZ-vm-GAx"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" weight="medium" pointSize="16"/>
-                                        <state key="normal" title="Cerrar">
+                                        <state key="normal" title="Volver">
                                             <color key="titleColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </state>
                                         <connections>
@@ -990,9 +992,25 @@
                                         <color key="textColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LIR-V5-bMI">
+                                        <rect key="frame" x="247" y="27" width="73" height="30"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="30" id="PHH-ei-eoK"/>
+                                            <constraint firstAttribute="width" constant="73" id="pdT-B5-eeX"/>
+                                        </constraints>
+                                        <state key="normal" title="Aceptar">
+                                            <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="btnGuardar:" destination="VEQ-P3-HYF" eventType="touchUpInside" id="CKf-kg-Vf2"/>
+                                            <segue destination="Lmg-cA-yMl" kind="unwind" unwindAction="unwindLaWeaWithSegue:" id="zU8-0Y-UOJ"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" red="0.56699913300000004" green="0.75516110749999998" blue="0.18433419209999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="LIR-V5-bMI" secondAttribute="trailing" id="3HE-nw-8Yw"/>
+                                    <constraint firstItem="LIR-V5-bMI" firstAttribute="centerY" secondItem="3OQ-gr-bvs" secondAttribute="centerY" constant="9.5" id="4ce-vI-GDZ"/>
                                     <constraint firstItem="GPh-u0-sSw" firstAttribute="centerX" secondItem="3OQ-gr-bvs" secondAttribute="centerX" id="9FB-dF-I7a"/>
                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="65" id="FxW-G3-egU"/>
                                     <constraint firstItem="ety-Li-s9r" firstAttribute="leading" secondItem="3OQ-gr-bvs" secondAttribute="leading" constant="8" id="PBx-Vg-TLK"/>
@@ -1017,13 +1035,15 @@
                     </view>
                     <navigationItem key="navigationItem" id="cdH-vP-Mha"/>
                     <connections>
+                        <outlet property="btnAceptar" destination="LIR-V5-bMI" id="Z3f-XX-QWc"/>
                         <outlet property="lblTitulo" destination="GPh-u0-sSw" id="WK2-BJ-L5m"/>
                         <outlet property="txtDato" destination="haJ-gN-YZ2" id="qtX-Jf-ML1"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6oA-tQ-PTZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="Lmg-cA-yMl" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="4149.375" y="1090"/>
+            <point key="canvasLocation" x="3323" y="1433"/>
         </scene>
     </scenes>
     <resources>
