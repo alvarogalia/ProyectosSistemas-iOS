@@ -23,6 +23,7 @@ class EmpresasViewController: UIViewController, UICollectionViewDelegate, UIColl
     let userDefaults = UserDefaults.standard
     var SELECTED_EMPRESA = ""
     var SELECTED_NombreEmpresa = ""
+    var effectView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
     @IBOutlet weak var Mycollection: EmpresasCollectionViewCell!
     
     @IBOutlet weak var Collection: UICollectionView!
@@ -98,11 +99,16 @@ class EmpresasViewController: UIViewController, UICollectionViewDelegate, UIColl
     //------------------------------------------------------------------------------------------//
     //Funcion que permite comunicarse con el servicio para poder obtener datos
     //------------------------------------------------------------------------------------------//
-    
+    override func viewDidAppear(_ animated: Bool) {
+        self.effectView.removeFromSuperview()
+        
+    }
     
     override func viewWillAppear(_ animated: Bool) {
         let url = URL(string: "http://200.111.46.182/WS_MovilProyecto/MovilProyecto.asmx/getListadoEmpresas")
         
+        effectView = activityIndicator(title: "Cargando Información", view: self.view)
+        self.view.addSubview(effectView)
         let task = URLSession.shared.dataTask(with: url!) {(data, response, error) in
             if(data != nil){
                 let parser = XMLParser(data: data!)
@@ -111,6 +117,7 @@ class EmpresasViewController: UIViewController, UICollectionViewDelegate, UIColl
                 
                 DispatchQueue.main.async {
                     self.Collection.reloadData()
+                    self.effectView.removeFromSuperview()
                 }
             }
             else{
@@ -119,6 +126,8 @@ class EmpresasViewController: UIViewController, UICollectionViewDelegate, UIColl
                     let alert = UIAlertController(title: "Error", message: "Problemas de conexión", preferredStyle: UIAlertControllerStyle.alert)
                     alert.addAction(UIAlertAction(title: "Reintentar", style: UIAlertActionStyle.default, handler: nil))
                     self.present(alert, animated: true, completion: nil)
+                    self.effectView.removeFromSuperview()
+                    self.viewWillAppear(true)
                 }
             }
         }

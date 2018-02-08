@@ -25,12 +25,111 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
         self.dismiss(animated: true, completion: nil)
     }
     
+    // Cambio de formato para que lo reciba la base (formato: yyyy/dd/mm)
+    func ChangeDateFormat (Date: String) -> String {
+        let ArrayDate = Date.components(separatedBy: "/")
+        var StringDate = String()
+        StringDate = StringDate + ArrayDate[0] + "/" + ArrayDate[2] + "/" +  ArrayDate[1]
+        return StringDate
+    }
+    
+    // Cambio de caracter en caso de que encuentre alguna comilla simple sola
+    func ChangeStringFormat (cadena: String) -> String {
+        let newString = cadena.replacingOccurrences(of: "'", with: "''")
+        return newString
+    }
+    
+   
+    
     @IBAction func btnEditar(_ sender: Any) {
         activarEditar()
+      
+        if((sender as! UIButton).titleLabel?.text == "Editar"){
+            (sender as! UIButton).setTitle("Guardar", for: .normal)
+        }
+        
+        if((sender as! UIButton).titleLabel?.text == "Guardar"){
+            var UrlModificar = String()
+            var date : String
+            var stringAux : String
+            
+          
+            UrlModificar = "http://192.168.1.149/WS_MovilProyecto/MovilProyecto.asmx/setActualizarProyectoQuery?"
+           
+                for elem in items{
+                    if((UrlModificar.contains(elem.key) == false) || elem.key == "Proyecto"){
+                        if(elem.key == "Inicio" || elem.key == "Termino"){
+                            UrlModificar = UrlModificar + elem.key + "="
+                            date = ChangeDateFormat(Date: elem.value)
+                            UrlModificar = UrlModificar + date.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)! + "&"
+                        }
+                        else{
+                            UrlModificar = UrlModificar + elem.key + "="
+                            stringAux = ChangeStringFormat(cadena: elem.value)
+                            UrlModificar = UrlModificar + stringAux.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)! + "&"
+                           
+                        }
+                      
+                    }
+                }
+            
+                UrlModificar = UrlModificar.replacingOccurrences(of: " ", with: "%20%")
+                let aux = userDefaults.string(forKey: "UserName")! as String
+                UrlModificar = UrlModificar + "Usuario_Modifica=\(aux)"+"&"
+                UrlModificar = UrlModificar + "Cod_Proyecto=\(SELECTED_COD_PROYECTO)"
+            
+            
+            
+                for elem in mapeo{
+                    if(UrlModificar.contains(elem.key) == false){
+                        UrlModificar = UrlModificar + "&" + elem.key + "="
+                        UrlModificar = UrlModificar + ""
+                        
+                    }
+                }
+            print(UrlModificar)
+            
+            
+            let url = URL(string: UrlModificar)
+            
+            effectView = activityIndicator(title: "Modificando datos", view: self.view)
+            self.view.addSubview(effectView)
+            let task_Modificar = URLSession.shared.dataTask(with: url!) {(data, response, error) in
+                
+                let httpResponse = response as? HTTPURLResponse
+               // SI EL STATUSCODE ES 200 SI MODIFICO EL PROYECTO
+               // SI ES 500, EXISTEN PROBLEMAS
+             
+               // print(httpResponse?.statusCode as Any)
+                if(httpResponse?.statusCode == 200){
+                    DispatchQueue.main.async {
+                        let alert = UIAlertController(title: "Modificación Exitosa", message: "proyecto modificado correctamente", preferredStyle: UIAlertControllerStyle.alert)
+                        alert.addAction(UIAlertAction(title: "Aceptar", style: UIAlertActionStyle.default, handler: nil))
+                        self.present(alert, animated: true, completion: nil)
+                        self.effectView.removeFromSuperview()
+                    }
+                }
+                else{
+                    DispatchQueue.main.async {
+                        self.tableView.reloadData()
+                        
+                        let alert = UIAlertController(title: "Error", message: "Problemas al modificar datos", preferredStyle: UIAlertControllerStyle.alert)
+                        alert.addAction(UIAlertAction(title: "Reintentar", style: UIAlertActionStyle.default, handler: nil))
+                        self.present(alert, animated: true, completion: nil)
+                        self.effectView.removeFromSuperview()
+                    }
+                }
+            }
+            
+            task_Modificar.resume()
+            (sender as! UIButton).setTitle("Editar", for: .normal)
+            
+        }
+        
     }
-    @IBOutlet weak var btnEditar: UIButton!
     
-    var celdas : [String:String] = [:]
+    
+    @IBOutlet weak var btnEditar: UIButton!
     
     var items = [Campo]();
     var item = Campo();
@@ -42,7 +141,8 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
     var SELECTED_COLNAME = ""
     var editando = false
     var heightRow = 50
-    
+    var efecto = false
+    var effectView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
     let parser_picker = Parser()
     
     var mapeo = ["Proyecto":"Nombre Proyecto",
@@ -64,7 +164,7 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
                  "causas_y_atrasos":"Control De Gestion"]
     
     let texto = ["Proyecto", "Dcto_BG"]
-    let picker = ["Evaluador", "Estatus_Desarrollo", "Gestion", "Facturado", "Jefe_Proyecto", "JP_SISTEMAS", "Desarrollador"]
+    let picker = ["Evaluador", "Estatus_Desarrollo", "Gestion", "Facturado", "Jefe_Proyecto",                             "JP_SISTEMAS", "Desarrollador"]
     let numerico = ["Horas", "Total_UF", "SOC", "Orden_de_Compra"]
     let date = ["Inicio", "Termino"]
     let textoLargo = ["Bitacora_Cobranza", "causas_y_atrasos"]
@@ -73,8 +173,6 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        
         
         self.tableView.delegate = self
         self.tableView.dataSource = self
@@ -89,13 +187,15 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
         parser_picker.mapeo = ["Evaluador","Estatus_Desarrollo","Gestion","Facturado","Jefe_Proyecto","JP_SISTEMAS","Desarrollador"]
         let Cod_Empresa = UserDefaults.standard.string(forKey: "Cod_Empresa")!
         parser_picker.parseDatos(URL_: "\(base_url)/getListadoProyectosPorEmpresa?Cod_Empresa=\(Cod_Empresa)",Vista: self)
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
         
-        let url = URL(string: "\(base_url)/getListadoProyectosPorCodProyecto?Cod_Proyecto=\(SELECTED_COD_PROYECTO)")
+         self.view.isUserInteractionEnabled = false
         
+        let url = URL(string: "\(base_url)/getListadoProyectosPorCodProyecto?Cod_Proyecto=\(SELECTED_COD_PROYECTO)")
+        effectView = activityIndicator(title: "cargando información", view: self.tableView)
+        self.view.addSubview(effectView)
         let task = URLSession.shared.dataTask(with: url!) {(data, response, error) in
             let parser = XMLParser(data: data!)
             parser.delegate = (self as XMLParserDelegate)
@@ -103,12 +203,21 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
             
             DispatchQueue.main.async {
                 self.tableView.reloadData()
+                self.effectView.removeFromSuperview()
+                
             }
         }
         
         if(items.count == 0){
             task.resume()
         }
+       
+       
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+         self.view.isUserInteractionEnabled = true
+         self.effectView.removeFromSuperview()
     }
     
     @objc func keyboardWillShow(notification: NSNotification) {
@@ -133,6 +242,7 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
             campo_aux.key = elementName
             campo_aux.value = self.foundCharacters
             items.append(campo_aux)
+            
         }
         
         self.foundCharacters = ""
@@ -154,12 +264,13 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ProyectosCell", for: indexPath) as! DetalleTableViewCell
         cell.selectionStyle = UITableViewCellSelectionStyle.none
-        
+
+
         let nomColumna = self.items[indexPath.row].key
         let index = indexPath.row
         let campo_aux = self.items[index]
         var dato = campo_aux.value
-        
+       
         if editando {
             cell.lblDato.isEnabled = true
             if (numerico.contains(nomColumna)){
@@ -188,6 +299,10 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
         cell.lblDato.delegate = self
         cell.lblIdentificacion.text = self.mapeo[nomColumna]
         
+        if(cell.lblIdentificacion.text! == "Proyecto" && cell.lblDato.text! != ""){
+            efecto = true
+        }
+        
         return cell
     }
     
@@ -208,6 +323,7 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
         if (SELECTED_TITULO == "Bitacora" || SELECTED_TITULO == "Control De Gestion" || SELECTED_TITULO == "Nombre Proyecto")
         {
             performSegue(withIdentifier: "DetalleTextoViewController", sender: self)
+            
         }else if(editando){
             if(picker.contains(nomColumna)){
                 self.pickerView.delegate = self
@@ -231,7 +347,7 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
             }
         }
         
-        
+       
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -255,7 +371,6 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
         }else{
             editando = true
         }
-        
         self.tableView.reloadData()
     }
     
@@ -291,6 +406,14 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
         }
     }
     
+    @IBAction func unwindLaWea(segue:UIStoryboardSegue){
+        let pantalla_hija = segue.source as! DetalleTextoViewController
+        let campo_aux = self.items[self.tableView.indexPathForSelectedRow!.row] as Campo
+        campo_aux.value = pantalla_hija.SELECTED_DATO
+        self.items[self.tableView.indexPathForSelectedRow!.row].value = campo_aux.value
+        self.tableView.reloadData()
+    }
+    
     @IBAction func btnCancelarDate(_ sender: Any) {
         ocultarDateView()
     }
@@ -299,7 +422,7 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
         ocultarDateView()
         let cell = self.tableView.cellForRow(at: self.tableView.indexPathForSelectedRow!) as! DetalleTableViewCell
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
+        dateFormatter.dateFormat = "yyyy/MM/dd"
         let selectedDate = dateFormatter.string(from: self.datePickerView.date)
         cell.lblDato.text = selectedDate
         self.items[self.tableView.indexPathForSelectedRow!.row].value = selectedDate
@@ -317,7 +440,7 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
     
     func mostrarOptionPickerView(){
         let cell = self.tableView.cellForRow(at: self.tableView.indexPathForSelectedRow!) as! DetalleTableViewCell
-        
+        cell.selectionStyle = UITableViewCellSelectionStyle.none
         let cell_framemaxY = cell.frame.maxY
         let tableView_contentOffsetY = tableView.contentOffset.y
         let tableView_frameheight = self.view.frame.height - 70  //tableView.frame.height

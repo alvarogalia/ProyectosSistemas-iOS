@@ -80,7 +80,7 @@ class EstadosTableViewController: UITableViewController, XMLParserDelegate {
                 parser.parse()
                 
                 DispatchQueue.main.async {
-                    self.view.isUserInteractionEnabled = true
+                    
                     UIView.animate(withDuration: 0.2, animations: {
                         self.effectView.alpha = 0.0
                         self.refreshControl?.endRefreshing()
@@ -89,12 +89,12 @@ class EstadosTableViewController: UITableViewController, XMLParserDelegate {
                         self.tableView.reloadData()
                         self.actualizando = false
                     })
+                    self.view.isUserInteractionEnabled = true
                 }
             }
             else{
                 
                 DispatchQueue.main.async {
-                    self.view.isUserInteractionEnabled = true
                     self.tableView.reloadData()
                     self.effectView.alpha = 0.0
                     self.refreshControl?.endRefreshing()
@@ -107,7 +107,7 @@ class EstadosTableViewController: UITableViewController, XMLParserDelegate {
                     let alert = UIAlertController(title: "Error", message: "Problemas de conexión", preferredStyle: UIAlertControllerStyle.alert)
                     alert.addAction(UIAlertAction(title: "Reintentar", style: UIAlertActionStyle.default, handler: nil))
                     self.present(alert, animated: true, completion: nil)
-                    
+                  self.view.isUserInteractionEnabled = true
                 }
                 
             }

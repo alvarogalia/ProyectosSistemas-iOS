@@ -13,6 +13,7 @@ class DetalleTextoViewController: UIViewController, UITextViewDelegate {
     @IBOutlet weak var txtDato: UITextView!
     @IBOutlet weak var lblTitulo: UILabel!
     
+    
     var SELECTED_TITULO = ""
     var SELECTED_DATO = ""
     var EDITANDO = false
@@ -22,10 +23,16 @@ class DetalleTextoViewController: UIViewController, UITextViewDelegate {
         lblTitulo.text = SELECTED_TITULO
         txtDato.text = SELECTED_DATO
         
+        
         if(EDITANDO){
             txtDato.isEditable = true
+            self.btnAceptar.isEnabled = true
+            self.btnAceptar.isHidden = false
+
         }else{
             txtDato.isEditable = false
+            self.btnAceptar.isEnabled = false
+            self.btnAceptar.isHidden = true
         }
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow),
@@ -37,6 +44,8 @@ class DetalleTextoViewController: UIViewController, UITextViewDelegate {
         
     }
 
+    
+    
     @objc func keyboardWillShow(notification: NSNotification) {
         if let keyboardSize = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue.height{
             self.txtDato.frame = CGRect(x: self.txtDato.frame.minX, y: self.txtDato.frame.minY, width: self.txtDato.frame.width, height: self.txtDato.frame.height - keyboardSize)
@@ -60,14 +69,20 @@ class DetalleTextoViewController: UIViewController, UITextViewDelegate {
         self.dismiss(animated: true, completion: nil)
     }
     
-    /*
-    // MARK: - Navigation
+    
+    
+    @IBOutlet weak var btnAceptar: UIButton!
+    
+    @IBAction func btnGuardar(_ sender: Any) {
+        
+        
+        SELECTED_TITULO = lblTitulo.text!
+        SELECTED_DATO = txtDato.text!
+        print("Dato escrito a mano",SELECTED_DATO)
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+     
     }
-    */
+    
+   
 
 }

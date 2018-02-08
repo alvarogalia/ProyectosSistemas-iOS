@@ -39,7 +39,8 @@ class BuscarProyectosTableViewController: UIViewController, UIPickerViewDelegate
     var heightRow = 50
     var posicionBarraBusquedaY = CGFloat(0.0)
     var CeldasTableview : [Int:String] = [:]
-    var AUX : [String:String] = [:]
+    var Parche = false
+   
     
     
     var mapeo = [0:["Proyecto":"Nombre Proyecto"],
@@ -114,14 +115,16 @@ class BuscarProyectosTableViewController: UIViewController, UIPickerViewDelegate
                     ARRAY_FILTRO[(map.value.first?.key)!] = CeldasTableview[map.key]
                 }
             }
+            print(ARRAY_FILTRO)
             let destination = segue.destination as! ProyectosTableViewController
+            Parche = true
+            destination.Parche = true
             destination.ARRAY_FILTRO = ARRAY_FILTRO
+            Parche = false
         }
     }
     
     
-    
-  
     
     //.............................................................................//
     //............................... FUNCIONES ...................................//
@@ -183,10 +186,6 @@ class BuscarProyectosTableViewController: UIViewController, UIPickerViewDelegate
         
         
         cell.LblFiltro.text = self.mapeo[indexPath.row]?.first?.value
-        
-        
-        
-        
         cell.TxtFiltroBusqueda.tag = indexPath.row
         cell.TxtFiltroBusqueda.text! = CeldasTableview[indexPath.row]!
         
@@ -280,6 +279,7 @@ class BuscarProyectosTableViewController: UIViewController, UIPickerViewDelegate
     func mostrarOptionPickerView(){
         
         let cell = self.TableViewBuscarProyectos.cellForRow(at: self.TableViewBuscarProyectos.indexPathForSelectedRow!) as! BuscarProyectosTableViewCell
+        
 
         UIView.animate(withDuration: 0.3, animations: {
             self.OpcionesBuscarProyectos.frame = CGRect(x: 0.0, y: self.TableViewBuscarProyectos.frame.maxY, width: self.view.frame.width, height: self.OpcionesBuscarProyectos.frame.height)
@@ -364,6 +364,7 @@ class BuscarProyectosTableViewController: UIViewController, UIPickerViewDelegate
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        
         parser_picker.mapeo = ["Evaluador","Estatus_Desarrollo","Gestion","Facturado","Jefe_Proyecto","JP_SISTEMAS","Desarrollador"]
         
         let Cod_Empresa = UserDefaults.standard.string(forKey: "Cod_Empresa")!

@@ -22,22 +22,48 @@ class Parser: XMLParser, XMLParserDelegate {
         
         let task = URLSession.shared.dataTask(with: url!) {(data, response, error) in
             
-            let parser = XMLParser(data: data!)
-            parser.delegate = self
-            parser.parse()
+            if(data != nil){
+                let parser = XMLParser(data: data!)
+                parser.delegate = self
+                parser.parse()
+                
+                DispatchQueue.main.async {
+                    if let vista = Vista as? BuscarProyectosTableViewController{
+                        UIView.animate(withDuration: 0.2, animations: {
+                            vista.effectView.alpha = 0.0
+                        }, completion:{ (finished: Bool) in
+                            vista.effectView.removeFromSuperview()
+                            vista.view.isUserInteractionEnabled = true
+                        })
+                    }
+                }
+            }
+            let httpResponse = response as? HTTPURLResponse
+            // SI EL STATUSCODE ES 200 SI MODIFICO EL PROYECTO
+            // SI ES 500, EXISTEN PROBLEMAS
             
-            DispatchQueue.main.async {
-                if let vista = Vista as? BuscarProyectosTableViewController{
-                    UIView.animate(withDuration: 0.2, animations: {
-                        vista.effectView.alpha = 0.0
-                    }, completion:{ (finished: Bool) in
-                        vista.effectView.removeFromSuperview()
-                        vista.view.isUserInteractionEnabled = true
-                    })
+            // print(httpResponse?.statusCode as Any)
+            if(httpResponse?.statusCode == 1009){
+                let vista = Vista as? BuscarProyectosTableViewController
+                let alert = UIAlertController(title: "Error", message: "Problemas de conexión", preferredStyle: UIAlertControllerStyle.alert)
+                alert.addAction(UIAlertAction(title: "Reintentar", style: UIAlertActionStyle.default, handler: nil))
+                vista?.effectView.removeFromSuperview()
+                vista?.view.isUserInteractionEnabled = true
+            }
+            else{
+                DispatchQueue.main.async {
+                    let vista = Vista as? BuscarProyectosTableViewController
+                    let alert = UIAlertController(title: "Error", message: "Problemas de conexión", preferredStyle: UIAlertControllerStyle.alert)
+                    alert.addAction(UIAlertAction(title: "Reintentar", style: UIAlertActionStyle.default, handler: nil))
+                    vista?.effectView.removeFromSuperview()
+                    vista?.view.isUserInteractionEnabled = true
+                    
                 }
             }
         }
-        
+        //let vista = Vista as? BuscarProyectosTableViewController
+
+        //vista?.effectView.removeFromSuperview()
         task.resume()
     }
     
