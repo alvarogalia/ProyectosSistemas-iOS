@@ -8,12 +8,31 @@
 
 import UIKit
 
+
 class JP {
     var Nombre_JP = ""
     var Cantidad = ""
 }
 
+
 class JPSistemasTableViewController: UITableViewController, XMLParserDelegate {
+    
+    
+    
+    //...................................................................//
+    //..................... VARIABLES Y CONSTANTES ......................//
+    //...................................................................//
+    
+    
+    
+    //.......................... CONSTANTES .............................//
+    
+    
+    let Cod_Empresa = UserDefaults.standard.string(forKey: "Cod_Empresa")
+    
+    
+    //........................... VARIABLES .............................//
+    
     
     var items = [JP]();
     var item = JP();
@@ -21,9 +40,23 @@ class JPSistemasTableViewController: UITableViewController, XMLParserDelegate {
     var SELECTED_JP_SISTEMAS = "";
     var SELECTED_JP_CLIENTES = "";
     var effectView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
-    let Cod_Empresa = UserDefaults.standard.string(forKey: "Cod_Empresa")
+    var actualizando = false
+    let base_url = UserDefaults.standard.value(forKey: "base_url")!
+    
+    //...................................................................//
+    //............................ BOTONES ..............................//
+    //...................................................................//
+    
+    
+    
+    //............................ IBOUTLET .............................//
+    
     
     @IBOutlet weak var selectorJP: UISegmentedControl!
+    
+    
+    //............................ IBACTION .............................//
+    
     
     @IBAction func selectorJPChanged(_ sender: Any) {
         SELECTED_JP_SISTEMAS = ""
@@ -33,23 +66,126 @@ class JPSistemasTableViewController: UITableViewController, XMLParserDelegate {
     }
     
     
-    override func viewWillAppear(_ animated: Bool) {
+    
+    
+    //...................................................................//
+    //...................... FUNCIONES VIEW .............................//
+    //...................................................................//
+    
+    
+    
+    
+    override func viewDidLoad() {
+        self.tableView.reloadData()
+        
+        
         refreshControl = UIRefreshControl()
         refreshControl?.addTarget(self, action: #selector(loadURLandParse), for: .valueChanged)
         tableView.refreshControl = refreshControl
         if(items.count == 0){
             loadURLandParse()
         }
+       
+    }
+    
+    
+    
+    override func viewWillAppear(_ animated: Bool) {
+        
         
     }
-    var actualizando = false
+   
+    
+    
+    
+    //...................................................................//
+    //...................... FUNCIONES TABLE VIEW .......................//
+    //...................................................................//
+    
+    
+    
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        // #warning Incomplete implementation, return the number of rows
+        return items.count
+    }
+    
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "JPsCell", for: indexPath) as! JPSistemasTableViewCell
+        
+        cell.lblNombre.text = items[indexPath.row].Nombre_JP
+        cell.lblCant.text = items[indexPath.row].Cantidad
+        
+        return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        //let cell = tableView.cellForRow(at: indexPath) as! DetalleProyectoTableViewCell
+        if(selectorJP.titleForSegment(at: selectorJP.selectedSegmentIndex) == "JP Sistemas"){
+            self.SELECTED_JP_CLIENTES = ""
+            self.SELECTED_JP_SISTEMAS = items[indexPath.row].Nombre_JP
+        }else{
+            self.SELECTED_JP_SISTEMAS = ""
+            self.SELECTED_JP_CLIENTES = items[indexPath.row].Nombre_JP
+        }
+        
+        performSegue(withIdentifier: "JPSistemasToEstados", sender: self)
+    }
+    
+    
+    
+    
+    //...................................................................//
+    //..................... FUNCIONES PARSER ............................//
+    //...................................................................//
+    
+    
+    
+    func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
+        
+        if elementName == "Nombre_JP" {
+            self.item.Nombre_JP = self.foundCharacters
+        }
+        
+        if elementName == "Cantidad" {
+            self.item.Cantidad = self.foundCharacters
+        }
+        
+        if elementName == "JPSistemas" || elementName == "JPClientes"  {
+            let tempItem = JP();
+            tempItem.Nombre_JP = self.item.Nombre_JP
+            tempItem.Cantidad = self.item.Cantidad
+            self.items.append(tempItem);
+        }
+        self.foundCharacters = ""
+    }
+    
+    func parser(_ parser: XMLParser, foundCharacters string: String) {
+        let value = string.trim();
+        if( value != "\n"){
+            self.foundCharacters += value;
+        }else{
+            self.foundCharacters = ""
+        }
+    }
+    
+    
+    
+    
+    //...................................................................//
+    //..................... OTRAS FUNCIONES .............................//
+    //...................................................................//
+    
+   
+    
     
     @objc func loadURLandParse(){
         var url_ = ""
         if(selectorJP.titleForSegment(at: selectorJP.selectedSegmentIndex) == "JP Sistemas"){
-            url_ = "http://200.111.46.182/WS_MovilProyecto/MovilProyecto.asmx/getListadoJPSistemasPorEmpresa?Cod_Empresa=\(Cod_Empresa ?? "1")"
+            url_ = "\(base_url)/getListadoJPSistemasPorEmpresa?Cod_Empresa=\(Cod_Empresa ?? "1")"
         }else{
-            url_ = "http://200.111.46.182/WS_MovilProyecto/MovilProyecto.asmx/getListadoJPClientesPorEmpresa?Cod_Empresa=\(Cod_Empresa ?? "1")"
+            url_ = "\(base_url)/getListadoJPClientesPorEmpresa?Cod_Empresa=\(Cod_Empresa ?? "1")"
         }
         
         effectView = activityIndicator(title: "Cargando Información", view: self.tableView)
@@ -89,21 +225,16 @@ class JPSistemasTableViewController: UITableViewController, XMLParserDelegate {
                     self.effectView.alpha = 0.0
                     self.refreshControl?.endRefreshing()
                     self.effectView.removeFromSuperview()
-                    //self.tableView.reloadData()
                     self.actualizando = false
-                    
                     self.tableView.contentOffset.y = 0.0
-                    
                     
                     let alert = UIAlertController(title: "Error", message: "Problemas de conexión", preferredStyle: UIAlertControllerStyle.alert)
                     alert.addAction(UIAlertAction(title: "Reintentar", style: UIAlertActionStyle.default, handler: nil))
                     self.present(alert, animated: true, completion: nil)
                 self.view.isUserInteractionEnabled = true
+                    self.loadURLandParse()
                 }
-                
             }
-            
-            
         }
         
         if(self.refreshControl?.isRefreshing != true){
@@ -120,67 +251,6 @@ class JPSistemasTableViewController: UITableViewController, XMLParserDelegate {
     }
     
     
-    override func viewDidLoad() {
-        self.tableView.reloadData()
-        
-        //self.view.addSubview(effectView)
-    }
-    
-    func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
-        
-        if elementName == "Nombre_JP" {
-            self.item.Nombre_JP = self.foundCharacters
-        }
-        
-        if elementName == "Cantidad" {
-            self.item.Cantidad = self.foundCharacters
-        }
-        
-        if elementName == "JPSistemas" || elementName == "JPClientes"  {
-            let tempItem = JP();
-            tempItem.Nombre_JP = self.item.Nombre_JP
-            tempItem.Cantidad = self.item.Cantidad
-            self.items.append(tempItem);
-        }
-        self.foundCharacters = ""
-    }
-    
-    func parser(_ parser: XMLParser, foundCharacters string: String) {
-        let value = string.trim();
-        if( value != "\n"){
-            self.foundCharacters += value;
-        }else{
-            self.foundCharacters = ""
-        }
-    }
-    
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return items.count
-    }
-    
-    
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "JPsCell", for: indexPath) as! JPSistemasTableViewCell
-        
-        cell.lblNombre.text = items[indexPath.row].Nombre_JP
-        cell.lblCant.text = items[indexPath.row].Cantidad
-        
-        return cell
-    }
-    
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        //let cell = tableView.cellForRow(at: indexPath) as! DetalleProyectoTableViewCell
-        if(selectorJP.titleForSegment(at: selectorJP.selectedSegmentIndex) == "JP Sistemas"){
-            self.SELECTED_JP_CLIENTES = ""
-            self.SELECTED_JP_SISTEMAS = items[indexPath.row].Nombre_JP
-        }else{
-            self.SELECTED_JP_SISTEMAS = ""
-            self.SELECTED_JP_CLIENTES = items[indexPath.row].Nombre_JP
-        }
-        
-        performSegue(withIdentifier: "JPSistemasToEstados", sender: self)
-    }
     
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

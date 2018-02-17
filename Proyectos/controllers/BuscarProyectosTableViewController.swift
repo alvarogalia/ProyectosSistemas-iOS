@@ -16,10 +16,14 @@ class Filtro {
 class BuscarProyectosTableViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource,  XMLParserDelegate , UITextFieldDelegate , UITableViewDelegate, UITableViewDataSource{
     
     
-    //.............................................................................//
-    //........................ VARIABLES Y CONSTANTES .............................//
-    //.............................................................................//
     
+    //...................................................................//
+    //..................... VARIABLES Y CONSTANTES ......................//
+    //...................................................................//
+    
+    
+    
+    //.......................... CONSTANTES .............................//
     
     
     
@@ -27,8 +31,10 @@ class BuscarProyectosTableViewController: UIViewController, UIPickerViewDelegate
     let picker = ["Evaluador", "Estado", "Gestion", "Facturado", "Jp Cliente", "Jp Sistemas"]
     let parser_picker = Parser()
     let base_url = UserDefaults.standard.value(forKey: "base_url")!
+    
+    
+    //........................... VARIABLES .............................//
     var effectView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
-
     var foundCharacters = "";
     var SELECTED_COD_PROYECTO = ""
     var SELECTED_TITULO = ""
@@ -40,9 +46,6 @@ class BuscarProyectosTableViewController: UIViewController, UIPickerViewDelegate
     var posicionBarraBusquedaY = CGFloat(0.0)
     var CeldasTableview : [Int:String] = [:]
     var Parche = false
-   
-    
-    
     var mapeo = [0:["Proyecto":"Nombre Proyecto"],
                  1:["Dcto_BG":"BG"],
                  2:["Evaluador":"Evaluador"],
@@ -53,9 +56,13 @@ class BuscarProyectosTableViewController: UIViewController, UIPickerViewDelegate
                  7:["JP_SISTEMAS":"Jp Sistemas"]]
     
     
-    //.............................................................................//
-    //................................. BOTONES ...................................//
-    //.............................................................................//
+    //...................................................................//
+    //............................ BOTONES ..............................//
+    //...................................................................//
+    
+    
+    
+    //............................ IBOUTLET .............................//
     
     
     
@@ -63,6 +70,11 @@ class BuscarProyectosTableViewController: UIViewController, UIPickerViewDelegate
     @IBOutlet weak var OpcionesBuscarProyectos: UIView!
     @IBOutlet weak var PickerBuscarProyectos: UIPickerView!
     @IBOutlet weak var BarraDeBusqueda: UIView!
+    
+    
+    //............................ IBACTION .............................//
+    
+    
     
     @IBAction func BtnSeleccionarOpcion(_ sender: Any) {
         restauraTablePicker()
@@ -81,10 +93,13 @@ class BuscarProyectosTableViewController: UIViewController, UIPickerViewDelegate
     }
     
     
+    
     @IBAction func BtnCancelarOpcion(_ sender: Any) {
         restauraTablePicker()
         ocultarOptionPickerView()
     }
+    
+    
     
     @IBAction func BtnLimpiar(_ sender: Any) {
         var i = 0
@@ -106,30 +121,15 @@ class BuscarProyectosTableViewController: UIViewController, UIPickerViewDelegate
     }
     
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if (segue.identifier == "MuestraResultado")
-        {
-            var ARRAY_FILTRO : [String:String] = [:]
-            for map in mapeo{
-                if(CeldasTableview[map.key]?.trim() != "" && CeldasTableview[map.key] != nil){
-                    ARRAY_FILTRO[(map.value.first?.key)!] = CeldasTableview[map.key]
-                }
-            }
-            print(ARRAY_FILTRO)
-            let destination = segue.destination as! ProyectosTableViewController
-            Parche = true
-            destination.Parche = true
-            destination.ARRAY_FILTRO = ARRAY_FILTRO
-            Parche = false
-        }
-    }
     
     
     
-    //.............................................................................//
-    //............................... FUNCIONES ...................................//
-    //.............................................................................//
-
+    //...................................................................//
+    //...................... FUNCIONES VIEW .............................//
+    //...................................................................//
+    
+    
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -140,9 +140,18 @@ class BuscarProyectosTableViewController: UIViewController, UIPickerViewDelegate
             a = a + 1
         }
         
+        
+        parser_picker.mapeo = ["Evaluador","Estatus_Desarrollo","Gestion","Facturado","Jefe_Proyecto","JP_SISTEMAS","Desarrollador"]
+        
+        let Cod_Empresa = UserDefaults.standard.string(forKey: "Cod_Empresa")!
+        
+        self.effectView = activityIndicator(title: "Cargando Información", view: self.view)
+        self.view.addSubview(self.effectView)
+        self.view.isUserInteractionEnabled = false
+        parser_picker.parseDatos(URL_: "\(base_url)/getListadoProyectosPorEmpresa?Cod_Empresa=\(Cod_Empresa)",Vista: self)
+        
         self.TableViewBuscarProyectos.delegate = self
         self.TableViewBuscarProyectos.dataSource = self
-        
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow),
                                                name: NSNotification.Name.UIKeyboardWillShow, object: nil)
@@ -157,11 +166,29 @@ class BuscarProyectosTableViewController: UIViewController, UIPickerViewDelegate
     
     
     
-    //.............................................................................//
-    //............................... TABLE VIEW ..................................//
-    //.............................................................................//
-
-   
+    
+    override func viewWillAppear(_ animated: Bool) {
+        self.TableViewBuscarProyectos.reloadData()
+        
+    }
+    
+    
+    
+    override func viewDidAppear(_ animated: Bool) {
+        
+       
+        
+    }
+    
+    
+    
+    
+    //...................................................................//
+    //...................... FUNCIONES TABLE VIEW .......................//
+    //...................................................................//
+    
+    
+    
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.mapeo.count
@@ -180,8 +207,11 @@ class BuscarProyectosTableViewController: UIViewController, UIPickerViewDelegate
     }
     
     
-    //-------------------- LLENADO DE LAS CELDAS DE LA TABLA ----------------------//
+    
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        
         let cell = tableView.dequeueReusableCell(withIdentifier: "ProyectosCell", for: indexPath) as! BuscarProyectosTableViewCell
         
         
@@ -197,8 +227,8 @@ class BuscarProyectosTableViewController: UIViewController, UIPickerViewDelegate
             cell.TxtFiltroBusqueda.isEnabled = false
             cell.TxtFiltroBusqueda.borderStyle = UITextBorderStyle.none
         }
-      
-     
+        
+        
         cell.TxtFiltroBusqueda.delegate = self
         
         cell.selectionStyle = UITableViewCellSelectionStyle.none
@@ -215,23 +245,23 @@ class BuscarProyectosTableViewController: UIViewController, UIPickerViewDelegate
         self.PickerBuscarProyectos.dataSource = self
         self.PickerBuscarProyectos.delegate = self
         self.PickerBuscarProyectos.reloadAllComponents()
-  
+        
         if picker.contains(cell.LblFiltro.text!){
             
-                self.TableViewBuscarProyectos.frame = CGRect(x: CGFloat(0.0), y: self.TableViewBuscarProyectos.frame.minY, width: self.view.frame.width, height: self.view.frame.height - self.OpcionesBuscarProyectos.frame.height - 65 - 35)
-                    mostrarOptionPickerView()
-            }
+            self.TableViewBuscarProyectos.frame = CGRect(x: CGFloat(0.0), y: self.TableViewBuscarProyectos.frame.minY, width: self.view.frame.width, height: self.view.frame.height - self.OpcionesBuscarProyectos.frame.height - 65 - 35)
+            mostrarOptionPickerView()
+        }
         SELECTED_ROW = indexPath.row
-    
+        
     }
     
     
     
     
-
-    //.............................................................................//
-    //............................. PICKER VIEW .................................//
-    //.............................................................................//
+    
+    //...................................................................//
+    //........................ FUNCIONES PICKER .........................//
+    //...................................................................//
     
     
     
@@ -239,13 +269,13 @@ class BuscarProyectosTableViewController: UIViewController, UIPickerViewDelegate
         return 1
     }
     
-  
+    
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         // Para verificar que no sea proyecto o bg
         if(SELECTED_COLNAME != "Proyecto" && SELECTED_COLNAME != "Dcto_BG"){
-        let value = parser_picker.elementos[SELECTED_COLNAME]![row]
-        return value
+            let value = parser_picker.elementos[SELECTED_COLNAME]![row]
+            return value
         }
         return nil
     }
@@ -260,10 +290,11 @@ class BuscarProyectosTableViewController: UIViewController, UIPickerViewDelegate
         return 1
     }
     
-   
+    
     func restauraTablePicker(){
         self.TableViewBuscarProyectos.frame = CGRect(x: CGFloat(0.0), y: self.view.frame.minY + 70, width: self.view.frame.width, height: self.view.frame.height - 70 - 65 - 10 )
     }
+    
     
     
     
@@ -280,7 +311,7 @@ class BuscarProyectosTableViewController: UIViewController, UIPickerViewDelegate
         
         let cell = self.TableViewBuscarProyectos.cellForRow(at: self.TableViewBuscarProyectos.indexPathForSelectedRow!) as! BuscarProyectosTableViewCell
         
-
+        
         UIView.animate(withDuration: 0.3, animations: {
             self.OpcionesBuscarProyectos.frame = CGRect(x: 0.0, y: self.TableViewBuscarProyectos.frame.maxY, width: self.view.frame.width, height: self.OpcionesBuscarProyectos.frame.height)
         }, completion:{ (finished: Bool) in
@@ -288,7 +319,7 @@ class BuscarProyectosTableViewController: UIViewController, UIPickerViewDelegate
         })
         
         
-        //-------------- MOVER EL TABLE VIEW SEGUN CELDA SELECCIONADA ---------------//
+
         let cell_framemaxY = cell.frame.maxY
         let tableView_contentOffsetY = TableViewBuscarProyectos.contentOffset.y
         let tableView_frameheight = self.view.frame.height - 70  //tableView.frame.height
@@ -304,15 +335,10 @@ class BuscarProyectosTableViewController: UIViewController, UIPickerViewDelegate
         }
     }
     
- 
     
-    
-    
-    
-    
-    //.............................................................................//
-    //............................... TECLADO .....................................//
-    //.............................................................................//
+    //...................................................................//
+    //................. FUNCIONES TECLADO CELULAR .......................//
+    //...................................................................//
     
     
     
@@ -320,7 +346,7 @@ class BuscarProyectosTableViewController: UIViewController, UIPickerViewDelegate
         if let keyboardSize = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue.height{
             
             ocultarOptionPickerView()
-         
+            
             /* 70 es el tamaño de la barra de arriba */
             UIView.animate(withDuration: 0.3, animations: {
                 self.TableViewBuscarProyectos.frame = CGRect(x: CGFloat(0.0), y: self.view.frame.minY + 70, width: self.view.frame.width, height: self.view.frame.height - 70 - keyboardSize)
@@ -333,16 +359,25 @@ class BuscarProyectosTableViewController: UIViewController, UIPickerViewDelegate
     
     
     @objc func keyboardWillHide(notification: NSNotification) {
-       
+        
         restauraTablePicker()
-      
     }
+    
+    
+    
+    //...................................................................//
+    //..................... FUNCIONES TEXT FIELD ........................//
+    //...................................................................//
+    
+    
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         view.endEditing(true)
         return true
     }
+    
+    
     
     func textFieldDidEndEditing(_ textField: UITextField) {
         self.CeldasTableview[textField.tag] = textField.text!
@@ -351,29 +386,28 @@ class BuscarProyectosTableViewController: UIViewController, UIPickerViewDelegate
     
     
     
-    
-    
-    //.............................................................................//
-    //............................ OTRAS FUNCIONES ................................//
-    //.............................................................................//
+    //...................................................................//
+    //..................... OTRAS FUNCIONES .............................//
+    //...................................................................//
     
     
     
-    override func viewWillAppear(_ animated: Bool) {
-        self.TableViewBuscarProyectos.reloadData()
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if (segue.identifier == "MuestraResultado")
+        {
+            var ARRAY_FILTRO : [String:String] = [:]
+            for map in mapeo{
+                if(CeldasTableview[map.key]?.trim() != "" && CeldasTableview[map.key] != nil){
+                    ARRAY_FILTRO[(map.value.first?.key)!] = CeldasTableview[map.key]
+                }
+            }
+            let destination = segue.destination as! ProyectosTableViewController
+            destination.ARRAY_FILTRO = ARRAY_FILTRO
+            
+        }
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        
-        parser_picker.mapeo = ["Evaluador","Estatus_Desarrollo","Gestion","Facturado","Jefe_Proyecto","JP_SISTEMAS","Desarrollador"]
-        
-        let Cod_Empresa = UserDefaults.standard.string(forKey: "Cod_Empresa")!
-        
-        self.effectView = activityIndicator(title: "Cargando Información", view: self.view)
-        self.view.addSubview(self.effectView)
-        self.view.isUserInteractionEnabled = false
-        parser_picker.parseDatos(URL_: "\(base_url)/getListadoProyectosPorEmpresa?Cod_Empresa=\(Cod_Empresa)",Vista: self)
-    }
+    
     
 
     override func didReceiveMemoryWarning() {
@@ -381,6 +415,8 @@ class BuscarProyectosTableViewController: UIViewController, UIPickerViewDelegate
     }
     
 
+    
+    
     @objc func activarEditar(){
         if(editando){
             editando = false
@@ -393,9 +429,3 @@ class BuscarProyectosTableViewController: UIViewController, UIPickerViewDelegate
 }
 
 
-
-
-
-    //....<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<........>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>....//
-    //....<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<.. FIN ..>>>>>>>>>>>>>>>>>>>>>>>>>>>>>....//
-    //....<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<........>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>....//

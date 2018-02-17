@@ -887,7 +887,7 @@
                                             <color key="titleColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </state>
                                         <connections>
-                                            <action selector="btnCerrar:" destination="gCL-e6-QxH" eventType="touchUpInside" id="s8P-uZ-S6n"/>
+                                            <segue destination="1wY-3Z-O0h" kind="unwind" unwindAction="unwindActualizarTablaProyectosWithSegue:" id="ohl-8P-TVk"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DuT-cn-qZW">
@@ -945,8 +945,9 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="CwB-WQ-V9q" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="1wY-3Z-O0h" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="2312" y="1433"/>
+            <point key="canvasLocation" x="2311.875" y="1432.5"/>
         </scene>
         <!--Vista Detallada-->
         <scene sceneID="n3I-WV-U5B">
@@ -956,11 +957,11 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" delaysContentTouches="NO" editable="NO" text="Texto" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="haJ-gN-YZ2">
-                                <rect key="frame" x="0.0" y="73" width="320" height="407"/>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" delaysContentTouches="NO" editable="NO" text="Texto" textAlignment="justified" translatesAutoresizingMaskIntoConstraints="NO" id="haJ-gN-YZ2">
+                                <rect key="frame" x="0.0" y="73" width="320" height="374"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <color key="textColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences" returnKeyType="done" enablesReturnKeyAutomatically="YES"/>
                                 <dataDetectorType key="dataDetectorTypes" phoneNumber="YES" calendarEvent="YES"/>
                             </textView>
@@ -979,7 +980,6 @@
                                         </state>
                                         <connections>
                                             <action selector="btnCerrar:" destination="VEQ-P3-HYF" eventType="touchUpInside" id="XXk-zv-WPX"/>
-                                            <action selector="btnCerrar:" destination="gCL-e6-QxH" eventType="touchUpInside" id="kBC-yT-JwF"/>
                                         </connections>
                                     </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GPh-u0-sSw">
@@ -1003,7 +1003,7 @@
                                         </state>
                                         <connections>
                                             <action selector="btnGuardar:" destination="VEQ-P3-HYF" eventType="touchUpInside" id="CKf-kg-Vf2"/>
-                                            <segue destination="Lmg-cA-yMl" kind="unwind" unwindAction="unwindLaWeaWithSegue:" id="zU8-0Y-UOJ"/>
+                                            <segue destination="Lmg-cA-yMl" kind="unwind" unwindAction="unwindLaWeaWithSegue:" id="xj1-Xx-p6E"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -1019,15 +1019,37 @@
                                     <constraint firstItem="ety-Li-s9r" firstAttribute="centerY" secondItem="3OQ-gr-bvs" secondAttribute="centerY" constant="10" id="uA4-Pa-xgR"/>
                                 </constraints>
                             </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="caracteres restantes :" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AW6-EU-Uqa">
+                                <rect key="frame" x="8" y="451" width="187" height="21"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="187" id="4N7-pg-NUn"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Numero" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9S9-6I-bvG">
+                                <rect key="frame" x="197" y="451" width="123" height="21"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="123" id="ndv-zx-ece"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="3OQ-gr-bvs" firstAttribute="top" secondItem="XBz-zP-2sO" secondAttribute="top" id="4tq-8O-97R"/>
                             <constraint firstItem="3OQ-gr-bvs" firstAttribute="trailing" secondItem="YCO-x0-4rB" secondAttribute="trailing" id="7JR-qG-8vM"/>
-                            <constraint firstItem="haJ-gN-YZ2" firstAttribute="bottom" secondItem="YCO-x0-4rB" secondAttribute="bottom" id="ChT-QW-lYe"/>
+                            <constraint firstItem="haJ-gN-YZ2" firstAttribute="bottom" secondItem="YCO-x0-4rB" secondAttribute="bottom" constant="-33" id="ChT-QW-lYe"/>
                             <constraint firstItem="haJ-gN-YZ2" firstAttribute="trailing" secondItem="YCO-x0-4rB" secondAttribute="trailing" id="IRa-AI-w3Y"/>
+                            <constraint firstItem="9S9-6I-bvG" firstAttribute="top" secondItem="haJ-gN-YZ2" secondAttribute="bottom" constant="4" id="QJX-ua-VAz"/>
+                            <constraint firstItem="9S9-6I-bvG" firstAttribute="leading" secondItem="AW6-EU-Uqa" secondAttribute="trailing" constant="2" id="U1B-PG-kHT"/>
+                            <constraint firstItem="AW6-EU-Uqa" firstAttribute="leading" secondItem="YCO-x0-4rB" secondAttribute="leading" constant="8" id="acb-34-AxY"/>
                             <constraint firstItem="haJ-gN-YZ2" firstAttribute="top" secondItem="3OQ-gr-bvs" secondAttribute="bottom" constant="8" id="ciJ-oq-vzz"/>
-                            <constraint firstItem="haJ-gN-YZ2" firstAttribute="bottom" secondItem="YCO-x0-4rB" secondAttribute="bottom" id="dtQ-Kq-eeZ"/>
+                            <constraint firstItem="haJ-gN-YZ2" firstAttribute="bottom" secondItem="YCO-x0-4rB" secondAttribute="bottom" constant="-33" id="dtQ-Kq-eeZ"/>
+                            <constraint firstItem="AW6-EU-Uqa" firstAttribute="top" secondItem="haJ-gN-YZ2" secondAttribute="bottom" constant="4" id="emG-Qd-XpF"/>
                             <constraint firstItem="3OQ-gr-bvs" firstAttribute="leading" secondItem="YCO-x0-4rB" secondAttribute="leading" id="oOt-Wg-FdD"/>
                             <constraint firstItem="haJ-gN-YZ2" firstAttribute="leading" secondItem="YCO-x0-4rB" secondAttribute="leading" id="qBX-Zr-gaz"/>
                         </constraints>
@@ -1037,13 +1059,14 @@
                     <connections>
                         <outlet property="btnAceptar" destination="LIR-V5-bMI" id="Z3f-XX-QWc"/>
                         <outlet property="lblTitulo" destination="GPh-u0-sSw" id="WK2-BJ-L5m"/>
+                        <outlet property="numPalabras" destination="9S9-6I-bvG" id="Sc8-lf-vlH"/>
                         <outlet property="txtDato" destination="haJ-gN-YZ2" id="qtX-Jf-ML1"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6oA-tQ-PTZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="Lmg-cA-yMl" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="3323" y="1433"/>
+            <point key="canvasLocation" x="3322.5" y="1432.5"/>
         </scene>
     </scenes>
     <resources>

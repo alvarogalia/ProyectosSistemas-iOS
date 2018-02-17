@@ -25,44 +25,72 @@ class Proyecto {
 
 class ProyectosTableViewController: UITableViewController, XMLParserDelegate, UISearchBarDelegate {
     
+
+    
+    //...................................................................//
+    //..................... VARIABLES Y CONSTANTES ......................//
+    //...................................................................//
+    
+    
+    
+    //........................... VARIABLES .............................//
+    
     var items = [Proyecto]();
     var items_resp = [Proyecto]();
-    var items_filtro = [Proyecto]();
     var item = Proyecto();
     var foundCharacters = "";
-    
-    var Parche = false
     var SELECTED_JP_SISTEMAS = "";
     var SELECTED_ESTADO = "";
     var SELECTED_COD_PROYECTO = "";
     var SELECTED_JP_CLIENTES = "";
     var url_ = ""
     var ARRAY_FILTRO : [String:String] = [:]
-    
     var actualizando = false
     var effectView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
+    let base_url = UserDefaults.standard.value(forKey: "base_url")!
+    
+    
+    
+    //...................................................................//
+    //............................ BOTONES ..............................//
+    //...................................................................//
+    
+    
+    
+    //............................ IBOUTLET .............................//
     
     
     @IBOutlet weak var searchBar: UISearchBar!
     
     
-    override func viewWillAppear(_ animated: Bool) {
+    
+    //...................................................................//
+    //...................... FUNCIONES VIEW .............................//
+    //...................................................................//
+    
+    
+    
+    
+    override func viewDidLoad() {
+        
+        print("PANTALLA PROYECTOS CARGADA")
+        searchBar.delegate = self
         
         let Cod_Empresa = UserDefaults.standard.string(forKey: "Cod_Empresa")!
         
         
         if(self.SELECTED_ESTADO != ""){
             if(self.SELECTED_JP_SISTEMAS != ""){
-                url_ = "http://200.111.46.182/WS_MovilProyecto/MovilProyecto.asmx/getListadoProyectosPorEstadoJPSistemasEmpresa?Cod_Empresa=\(Cod_Empresa )&JP_SISTEMAS=\(self.SELECTED_JP_SISTEMAS.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)&estado=\(self.SELECTED_ESTADO.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)"
+                url_ = "\(base_url)/getListadoProyectosPorEstadoJPSistemasEmpresa?Cod_Empresa=\(Cod_Empresa )&JP_SISTEMAS=\(self.SELECTED_JP_SISTEMAS.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)&estado=\(self.SELECTED_ESTADO.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)"
             }
             if(self.SELECTED_JP_CLIENTES != ""){
-                url_ = "http://200.111.46.182/WS_MovilProyecto/MovilProyecto.asmx/getListadoProyectosPorEstadoJPClientesEmpresa?Cod_Empresa=\(Cod_Empresa)&JPCliente=\(self.SELECTED_JP_CLIENTES.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)&estado=\(self.SELECTED_ESTADO.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)"
+                url_ = "\(base_url)/getListadoProyectosPorEstadoJPClientesEmpresa?Cod_Empresa=\(Cod_Empresa)&JPCliente=\(self.SELECTED_JP_CLIENTES.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)&estado=\(self.SELECTED_ESTADO.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)"
             }
             if(self.SELECTED_JP_CLIENTES == "" && self.SELECTED_JP_SISTEMAS == ""){
-                url_ = "http://200.111.46.182/WS_MovilProyecto/MovilProyecto.asmx/getListadoProyectosPorEstadoEmpresa?Cod_Empresa=\(Cod_Empresa)&txtEstado=\(SELECTED_ESTADO.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)"
+                url_ = "\(base_url)/getListadoProyectosPorEstadoEmpresa?Cod_Empresa=\(Cod_Empresa)&txtEstado=\(SELECTED_ESTADO.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)"
             }
         }else{
-            url_ = "http://200.111.46.182/WS_MovilProyecto/MovilProyecto.asmx/getListadoProyectosPorEmpresa?Cod_Empresa=\(Cod_Empresa)"
+            url_ = "\(base_url)/getListadoProyectosPorEmpresa?Cod_Empresa=\(Cod_Empresa)"
         }
         
         refreshControl = UIRefreshControl()
@@ -71,94 +99,54 @@ class ProyectosTableViewController: UITableViewController, XMLParserDelegate, UI
         if(items.count == 0 && actualizando == false){
             loadURLandParse()
         }
-        
-        
-        
-        
+    }
+    
+    //...................................................................//
+    //...................... FUNCIONES TABLE VIEW .......................//
+    //...................................................................//
+    
+    
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return items.count
     }
     
     
-    @objc func loadURLandParse(){
-        effectView = activityIndicator(title: "Cargando Información", view: self.tableView)
-        self.view.isUserInteractionEnabled = false
-        let url = URL(string: url_)
-        let task = URLSession.shared.dataTask(with: url!) {(data, response, error) in
-            
-            self.items.removeAll()
-            
-            if(data != nil){
-                let parser = XMLParser(data: data!)
-                parser.delegate = (self as XMLParserDelegate)
-                self.items.removeAll()
-                parser.parse()
-                
-                DispatchQueue.main.async {
-                    
-                    UIView.animate(withDuration: 0.2, animations: {
-                        self.tableView.reloadData()
-                        self.refreshControl?.endRefreshing()
-                    }, completion:{ (finished: Bool) in
-                        self.effectView.removeFromSuperview()
-                        self.actualizando = false
-                        
-                        
-                        /* UIView.animate(withDuration: 0.4, animations: {
-                         self.tableView.contentOffset.y = -8.0;
-                         }, completion: {
-                         (value: Bool) in
-                         })*/
-                    })
-                    self.view.isUserInteractionEnabled = true
-                    
-                }
-            }
-            else{
-                DispatchQueue.main.async {
-                    
-                    self.tableView.reloadData()
-                    self.effectView.alpha = 0.0
-                    self.refreshControl?.endRefreshing()
-                    self.effectView.removeFromSuperview()
-                    
-                    //self.tableView.reloadData()
-                    self.actualizando = false
-                    self.tableView.contentOffset.y = 0.0
-                    let alert = UIAlertController(title: "Error", message: "Problemas de conexión", preferredStyle: UIAlertControllerStyle.alert)
-                    alert.addAction(UIAlertAction(title: "Reintentar", style: UIAlertActionStyle.default, handler: nil))
-                    self.present(alert, animated: true, completion: nil)
-                    self.view.isUserInteractionEnabled = true
-                    
-                }
-            }
-            
-        }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "DetalleCell", for: indexPath) as! DetalleProyectoTableViewCell
         
-        if(self.refreshControl?.isRefreshing != true){
-            self.navigationController?.view.addSubview(self.effectView)
-        }
+        cell.lblDesc.text = items[indexPath.row].Proyecto
+        cell.lblIDProyecto.text = items[indexPath.row].Dcto_BG
+        cell.codProyecto.text = items[indexPath.row].Cod_Proyecto
+        cell.lblEmpresa.text = items[indexPath.row].Estatus_Desarrollo
         
-        if(self.actualizando == false){
-            self.actualizando = true
-            task.resume()
-        }
+        return cell
+    }
+    
+    
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
+        let cell = tableView.cellForRow(at: indexPath) as! DetalleProyectoTableViewCell
+        SELECTED_COD_PROYECTO = cell.codProyecto.text!
+        self.view.endEditing(true)
+        performSegue(withIdentifier: "DetalleProyectosSegue", sender: self)
+    }
+    
+    
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 80
     }
     
     
     
     
-    override func viewDidLoad() {
-        self.tableView.reloadData()
-        searchBar.delegate = self
-    }
     
-    
-    
-    
-    override func viewDidAppear(_ animated: Bool) {
-        self.tableView.reloadData()
-    }
-    
+    //...................................................................//
+    //....................... FUNCIONES PARSER ..........................//
+    //...................................................................//
     
     
     
@@ -175,7 +163,7 @@ class ProyectosTableViewController: UITableViewController, XMLParserDelegate, UI
                     var encontrado = 0
                     if(element.key == "Proyecto"){
                         for item in stringArr{
-                            if(Proyecto.Proyecto.lowercased().folding(options: .diacriticInsensitive, locale: NSLocale.current ).contains(item) && element.value == Proyecto.Proyecto){
+                            if(Proyecto.Proyecto.lowercased().folding(options: .diacriticInsensitive, locale: NSLocale.current ).contains(item)) {
                                 encontrado = encontrado + 1
                             }
                         }
@@ -183,7 +171,7 @@ class ProyectosTableViewController: UITableViewController, XMLParserDelegate, UI
                     }
                     if(element.key == "Dcto_BG"){
                         for item in stringArr{
-                            if(Proyecto.Dcto_BG.lowercased().folding(options: .diacriticInsensitive, locale: NSLocale.current ).contains(item) && element.value == Proyecto.Dcto_BG){
+                            if(Proyecto.Dcto_BG.lowercased().folding(options: .diacriticInsensitive, locale: NSLocale.current ).contains(item)){
                                 encontrado = encontrado + 1
                             }
                         }
@@ -243,9 +231,7 @@ class ProyectosTableViewController: UITableViewController, XMLParserDelegate, UI
                 
                 items_resp = items
             }
-            
         }
-        
     }
     
     
@@ -318,34 +304,26 @@ class ProyectosTableViewController: UITableViewController, XMLParserDelegate, UI
     
     
     
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return items.count
-    }
-    
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "DetalleCell", for: indexPath) as! DetalleProyectoTableViewCell
-        
-        cell.lblDesc.text = items[indexPath.row].Proyecto
-        cell.lblIDProyecto.text = items[indexPath.row].Dcto_BG
-        cell.codProyecto.text = items[indexPath.row].Cod_Proyecto
-        cell.lblEmpresa.text = items[indexPath.row].Estatus_Desarrollo
-        
-        
-        
-        return cell
+    func parser(_ parser: XMLParser, foundCharacters string: String) {
+        let value = string.trim();
+        if( value != "\n"){
+            self.foundCharacters += value;
+        }else{
+            self.foundCharacters = ""
+        }
     }
     
     
     
     
+    //...................................................................//
+    //...................... FUNCIONES SEARCH BAR .......................//
+    //...................................................................//
     
-    
-    
-    //................ SEARCH BAR .................//
     
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        //items_resp = items
+        
         
         if searchText == "" {
             items = items_resp
@@ -420,25 +398,61 @@ class ProyectosTableViewController: UITableViewController, XMLParserDelegate, UI
     
     
     
+    //...................................................................//
+    //..................... OTRAS FUNCIONES .............................//
+    //...................................................................//
     
     
+    @objc func loadURLandParse(){
+        
+        effectView = activityIndicator(title: "Cargando Información", view: self.tableView)
+        self.view.isUserInteractionEnabled = false
+        let url = URL(string: url_)
+        let task = URLSession.shared.dataTask(with: url!) {(data, response, error) in
+            if(data != nil){
+                let parser = XMLParser(data: data!)
+                parser.delegate = (self as XMLParserDelegate)
+                self.items.removeAll()
+                parser.parse()
+                
+                DispatchQueue.main.async {
+                    UIView.animate(withDuration: 0.2, animations: {
+                        self.tableView.reloadData()
+                        self.refreshControl?.endRefreshing()
+                    }, completion:{ (finished: Bool) in
+                        self.effectView.removeFromSuperview()
+                        self.actualizando = false
+                    })
+                    self.view.isUserInteractionEnabled = true
+                }
+            }
+            else{
+                DispatchQueue.main.async {
+                    self.effectView.alpha = 0.0
+                    self.refreshControl?.endRefreshing()
+                    self.effectView.removeFromSuperview()
+                    self.actualizando = false
+                    self.tableView.contentOffset.y = 0.0
+                    let alert = UIAlertController(title: "Error", message: "Problemas de conexión", preferredStyle: UIAlertControllerStyle.alert)
+                    alert.addAction(UIAlertAction(title: "Reintentar", style: UIAlertActionStyle.default, handler: nil))
+                    self.present(alert, animated: true, completion: nil)
+                    self.view.isUserInteractionEnabled = true
+                    self.loadURLandParse()
+                }
+            }
+        }
+        
+        if(self.refreshControl?.isRefreshing != true){
+            self.navigationController?.view.addSubview(self.effectView)
+        }
+        
+        if(self.actualizando == false){
+            self.actualizando = true
+            task.resume()
+        }
+        
+    }
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    ////////////////////////////////////////////////////////////////////////
     
     
     
@@ -447,35 +461,34 @@ class ProyectosTableViewController: UITableViewController, XMLParserDelegate, UI
     }
     
     
-    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        
-        
-    }
     
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 80
-    }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let destination = segue.destination as! DetalleTableViewController
         destination.SELECTED_COD_PROYECTO = SELECTED_COD_PROYECTO
     }
     
-    func parser(_ parser: XMLParser, foundCharacters string: String) {
-        let value = string.trim();
-        if( value != "\n"){
-            self.foundCharacters += value;
-        }else{
-            self.foundCharacters = ""
+    
+    
+    @IBAction func unwindActualizarTablaProyectos(segue:UIStoryboardSegue){
+        
+        let pantalla_hija = segue.source as! DetalleTableViewController
+
+        if(pantalla_hija.ActualizarTabla == true){
+            for item in pantalla_hija.items {
+                if(item.key == "Proyecto"){
+                    self.items[(self.tableView.indexPathForSelectedRow?.row)!].Proyecto = item.value
+                }
+                if(item.key == "Estatus_Desarrollo"){
+                    self.items[(self.tableView.indexPathForSelectedRow?.row)!].Estatus_Desarrollo = item.value
+                }
+                if(item.key == "Dcto_BG"){
+                    self.items[(self.tableView.indexPathForSelectedRow?.row)!].Dcto_BG = item.value
+                }
+            }
+            
+            self.tableView.reloadData()
         }
-    }
-    
-    
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let cell = tableView.cellForRow(at: indexPath) as! DetalleProyectoTableViewCell
-        SELECTED_COD_PROYECTO = cell.codProyecto.text!
-        self.view.endEditing(true)
-        performSegue(withIdentifier: "DetalleProyectosSegue", sender: self)
     }
     
     
