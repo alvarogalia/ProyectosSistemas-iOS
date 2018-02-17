@@ -8,7 +8,7 @@
 
 import UIKit
 
-var myIndex = 0
+
 
 class Estados {
     var Estatus_Desarrollo = ""
@@ -19,7 +19,22 @@ class Estados {
 
 class EstadosTableViewController: UITableViewController, XMLParserDelegate {
     
-    // MARK: - Table view data source
+    
+    
+    
+    //...................................................................//
+    //..................... VARIABLES Y CONSTANTES ......................//
+    //...................................................................//
+    
+    
+    //.......................... CONSTANTES .............................//
+    
+    
+    let userDefaults = UserDefaults.standard
+    
+    
+    //........................... VARIABLES .............................//
+    
     
     var items = [Estados]();
     var item = Estados();
@@ -29,6 +44,14 @@ class EstadosTableViewController: UITableViewController, XMLParserDelegate {
     var SELECTED_ESTADO = "";
     var effectView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
     var url_ = ""
+    var actualizando = false
+    let base_url = UserDefaults.standard.value(forKey: "base_url")!
+    
+    
+    //...................................................................//
+    //...................... FUNCIONES VIEW .............................//
+    //...................................................................//
+    
     
     
     
@@ -37,20 +60,16 @@ class EstadosTableViewController: UITableViewController, XMLParserDelegate {
         tableView.estimatedRowHeight = 80
         self.tableView.reloadData()
         
-    }
-    
-    
-    
-    override func viewWillAppear(_ animated: Bool) {
+        
         let Cod_Empresa = userDefaults.string(forKey: "Cod_Empresa")
         if(self.SELECTED_JP_SISTEMAS == "" && self.SELECTED_JP_CLIENTES == ""){
-            url_ = "http://200.111.46.182/WS_MovilProyecto/MovilProyecto.asmx/getListadoEstadosPorEmpresa?Cod_Empresa=\(Cod_Empresa ?? "")"
+            url_ = "\(base_url)/getListadoEstadosPorEmpresa?Cod_Empresa=\(Cod_Empresa ?? "")"
         }else{
             if(self.SELECTED_JP_CLIENTES != ""){
-                url_ = "http://200.111.46.182/WS_MovilProyecto/MovilProyecto.asmx/getListadoEstadosPorJPClientesEmpresa?Cod_Empresa=\(Cod_Empresa ?? "")&JPCliente=\(self.SELECTED_JP_CLIENTES.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)! )"
+                url_ = "\(base_url)/getListadoEstadosPorJPClientesEmpresa?Cod_Empresa=\(Cod_Empresa ?? "")&JPCliente=\(self.SELECTED_JP_CLIENTES.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)! )"
             }
             if(self.SELECTED_JP_SISTEMAS != ""){
-                url_ = "http://200.111.46.182/WS_MovilProyecto/MovilProyecto.asmx/getListadoEstadosPorJPSistemasEmpresa?Cod_Empresa=\(Cod_Empresa ?? "")&JP_SISTEMAS=\(self.SELECTED_JP_SISTEMAS.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)! )"
+                url_ = "\(base_url)/getListadoEstadosPorJPSistemasEmpresa?Cod_Empresa=\(Cod_Empresa ?? "")&JP_SISTEMAS=\(self.SELECTED_JP_SISTEMAS.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)! )"
             }
             
         }
@@ -60,10 +79,89 @@ class EstadosTableViewController: UITableViewController, XMLParserDelegate {
         if(items.count == 0){
             loadURLandParse()
         }
+        
     }
     
     
-    var actualizando = false
+    
+    override func viewWillAppear(_ animated: Bool) {
+        
+    }
+    
+    
+    
+    
+    //...................................................................//
+    //...................... FUNCIONES TABLE VIEW .......................//
+    //...................................................................//
+    
+    
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return self.items.count
+    }
+    
+    
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ProyectosCell", for: indexPath) as! ProyectosTableViewCell
+        cell.lblEstado.text = self.items[indexPath.row].Estatus_Desarrollo
+        cell.lblCantidad.text = self.items[indexPath.row].Cantidad
+        return cell
+    }
+    
+    
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let cell = tableView.cellForRow(at: indexPath) as! ProyectosTableViewCell
+        self.SELECTED_ESTADO = cell.lblEstado.text!
+        performSegue(withIdentifier: "ProyectosSegue", sender: self)
+    }
+    
+    
+    
+    
+    //...................................................................//
+    //..................... FUNCIONES PARSER ............................//
+    //...................................................................//
+    
+    
+    
+    func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
+        if elementName == "Estatus_Desarrollo" {
+            self.item.Estatus_Desarrollo = self.foundCharacters
+        }
+        if elementName == "Cantidad" {
+            self.item.Cantidad = self.foundCharacters
+        }
+        if elementName == "Estados" {
+            let tempItem = Estados();
+            tempItem.Cantidad = self.item.Cantidad
+            tempItem.Estatus_Desarrollo = self.item.Estatus_Desarrollo
+            self.items.append(tempItem);
+        }
+        self.foundCharacters = ""
+    }
+    
+    
+    
+    func parser(_ parser: XMLParser, foundCharacters string: String) {
+        let value = string.trim();
+        if( value != "\n"){
+            self.foundCharacters += value;
+        }else{
+            self.foundCharacters = ""
+        }
+    }
+    
+    
+    
+    
+    //...................................................................//
+    //..................... OTRAS FUNCIONES .............................//
+    //...................................................................//
+    
+    
     @objc func loadURLandParse(){
         effectView = activityIndicator(title: "Cargando Información", view: self.tableView)
         let url = URL(string: url_)
@@ -108,6 +206,7 @@ class EstadosTableViewController: UITableViewController, XMLParserDelegate {
                     alert.addAction(UIAlertAction(title: "Reintentar", style: UIAlertActionStyle.default, handler: nil))
                     self.present(alert, animated: true, completion: nil)
                   self.view.isUserInteractionEnabled = true
+                    self.loadURLandParse()
                 }
                 
             }
@@ -126,52 +225,7 @@ class EstadosTableViewController: UITableViewController, XMLParserDelegate {
         }
     }
     
-    
-    func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
-        if elementName == "Estatus_Desarrollo" {
-            self.item.Estatus_Desarrollo = self.foundCharacters
-        }
-        if elementName == "Cantidad" {
-            self.item.Cantidad = self.foundCharacters
-        }
-        if elementName == "Estados" {
-            let tempItem = Estados();
-            tempItem.Cantidad = self.item.Cantidad
-            tempItem.Estatus_Desarrollo = self.item.Estatus_Desarrollo
-            self.items.append(tempItem);
-        }
-        self.foundCharacters = ""
-    }
-    
-    func parser(_ parser: XMLParser, foundCharacters string: String) {
-        let value = string.trim();
-        if( value != "\n"){
-            self.foundCharacters += value;
-        }else{
-            self.foundCharacters = ""
-        }
-    }
-    
-    let userDefaults = UserDefaults.standard
-    
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.items.count
-    }
-    
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ProyectosCell", for: indexPath) as! ProyectosTableViewCell
-        cell.lblEstado.text = self.items[indexPath.row].Estatus_Desarrollo
-        cell.lblCantidad.text = self.items[indexPath.row].Cantidad
-        return cell
-    }
-    
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let cell = tableView.cellForRow(at: indexPath) as! ProyectosTableViewCell
-        self.SELECTED_ESTADO = cell.lblEstado.text!
-        performSegue(withIdentifier: "ProyectosSegue", sender: self)
-    }
-    
-    
+   
    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let controller = segue.destination as! ProyectosTableViewController

@@ -13,6 +13,7 @@ class Parser: XMLParser, XMLParserDelegate {
     var mapeo : [String] = []
     var elementos : [String:[String]] = [:]
     private var foundCharacters = ""
+    
     func parseDatos(URL_ : String, Vista: UIViewController){
         let url = URL(string: URL_)
         elementos = [:]
@@ -38,18 +39,7 @@ class Parser: XMLParser, XMLParserDelegate {
                     }
                 }
             }
-            let httpResponse = response as? HTTPURLResponse
-            // SI EL STATUSCODE ES 200 SI MODIFICO EL PROYECTO
-            // SI ES 500, EXISTEN PROBLEMAS
-            
-            // print(httpResponse?.statusCode as Any)
-            if(httpResponse?.statusCode == 1009){
-                let vista = Vista as? BuscarProyectosTableViewController
-                let alert = UIAlertController(title: "Error", message: "Problemas de conexión", preferredStyle: UIAlertControllerStyle.alert)
-                alert.addAction(UIAlertAction(title: "Reintentar", style: UIAlertActionStyle.default, handler: nil))
-                vista?.effectView.removeFromSuperview()
-                vista?.view.isUserInteractionEnabled = true
-            }
+         
             else{
                 DispatchQueue.main.async {
                     let vista = Vista as? BuscarProyectosTableViewController
@@ -57,13 +47,9 @@ class Parser: XMLParser, XMLParserDelegate {
                     alert.addAction(UIAlertAction(title: "Reintentar", style: UIAlertActionStyle.default, handler: nil))
                     vista?.effectView.removeFromSuperview()
                     vista?.view.isUserInteractionEnabled = true
-                    
                 }
             }
         }
-        //let vista = Vista as? BuscarProyectosTableViewController
-
-        //vista?.effectView.removeFromSuperview()
         task.resume()
     }
     

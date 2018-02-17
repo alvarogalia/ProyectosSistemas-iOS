@@ -180,10 +180,10 @@
 				B3ADA12C1FFEB9E20020253D /* DetalleTableViewController.swift */,
 				B3ADA12E1FFEC8720020253D /* DetalleTextoViewController.swift */,
 				B36676151F868C1600C3CA32 /* ProyectosTableViewController.swift */,
-				B345937D1F857DA4006BC982 /* EstadosTableViewController.swift */,
-				E926FC812007F5680067BBC3 /* BuscarProyectosTableViewController.swift */,
 				B3C71F9D1FFD802200FB9895 /* EmpresasViewController.swift */,
 				B3C71F991FFBE9C100FB9895 /* JPSistemasTableViewController.swift */,
+				B345937D1F857DA4006BC982 /* EstadosTableViewController.swift */,
+				E926FC812007F5680067BBC3 /* BuscarProyectosTableViewController.swift */,
 				B34593511F857CDE006BC982 /* ViewController.swift */,
 				E99EFC102007E89100A8F79F /* TarBarViewController.swift */,
 			);

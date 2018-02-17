@@ -9,49 +9,130 @@
 import UIKit
 
 
-//------------------------OBJETO EMPRESA------------------------//
-
 class Empresas {
     var Nombre_Empresa = ""
     var Codigo_Empresa = ""
 }
+
+
 class EmpresasViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, XMLParserDelegate {
+    
+    
+    
+    //...................................................................//
+    //..................... VARIABLES Y CONSTANTES ......................//
+    //...................................................................//
+    
+    
+    
+    //.......................... CONSTANTES .............................//
+    
+    
+    let userDefaults = UserDefaults.standard
+    
+    
+    //........................... VARIABLES .............................//
+    
     
     var items = [Empresas]();
     var item = Empresas();
     var foundCharacters = "";
-    let userDefaults = UserDefaults.standard
     var SELECTED_EMPRESA = ""
     var SELECTED_NombreEmpresa = ""
     var effectView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
-    @IBOutlet weak var Mycollection: EmpresasCollectionViewCell!
+    let base_url = UserDefaults.standard.value(forKey: "base_url")!
     
+
+    
+    //...................................................................//
+    //............................ BOTONES ..............................//
+    //...................................................................//
+    
+    
+    
+    //............................ IBOUTLET .............................//
+    
+    
+    @IBOutlet weak var Mycollection: EmpresasCollectionViewCell!
     @IBOutlet weak var Collection: UICollectionView!
     
-    //------------------------------------------------------------------------------------------//
+    
+    
+    
+    //...................................................................//
+    //...................... FUNCIONES VIEW .............................//
+    //...................................................................//
+    
     
     override func viewDidLoad() {
+       
         super.viewDidLoad()
         self.Collection.delegate = self
         self.Collection.dataSource = self
+        
+        let url = URL(string: "\(base_url)/getListadoEmpresas")
+        
+        effectView = activityIndicator(title: "Cargando Información", view: self.view)
+        self.view.addSubview(self.effectView)
+        
+        let task = URLSession.shared.dataTask(with: url!) {(data, response, error) in
+            
+            if(data != nil){
+                let parser = XMLParser(data: data!)
+                parser.delegate = (self as XMLParserDelegate)
+                parser.parse()
+                
+                DispatchQueue.main.async {
+                    self.Collection.reloadData()
+                    self.effectView.removeFromSuperview()
+                }
+            }
+            else{
+                DispatchQueue.main.async {
+                    self.Collection.reloadData()
+                    let alert = UIAlertController(title: "Error", message: "Problemas de conexión", preferredStyle: UIAlertControllerStyle.alert)
+                    alert.addAction(UIAlertAction(title: "Reintentar", style: UIAlertActionStyle.default, handler: nil))
+                    self.present(alert, animated: true, completion: nil)
+                    self.effectView.removeFromSuperview()
+                    self.viewDidLoad()
+                }
+            }
+        }
+        
+        if(items.count == 0){
+            task.resume()
+        }
+       
     }
     
-    //------------------------------------------------------------------------------------------//
+    
+    
+    override func viewDidAppear(_ animated: Bool) {
+        self.effectView.removeFromSuperview()
+    }
+    
+    
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
-    //------------------------------------------------------------------------------------------//
+    
+    
+    
+    //...................................................................//
+    //................. FUNCIONES COLLECTION VIEW .......................//
+    //...................................................................//
+    
+    
+    
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return items.count
     }
+   
     
-    //------------------------------------------------------------------------------------------//
-    //Funcion que permite ingresar los datos (Nombre empresa, Codigo y su Imagen) a las celdas
-    //------------------------------------------------------------------------------------------//
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "collection_cell", for: indexPath) as! EmpresasCollectionViewCell
@@ -73,7 +154,8 @@ class EmpresasViewController: UIViewController, UICollectionViewDelegate, UIColl
         return cell
     }
     
-    //------------------------------------------------------------------------------------------//
+    
+    
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         self.SELECTED_EMPRESA = items[indexPath.row].Codigo_Empresa
@@ -85,61 +167,15 @@ class EmpresasViewController: UIViewController, UICollectionViewDelegate, UIColl
         performSegue(withIdentifier: "empresaSeleccionadaSegue", sender: self)
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
-        
-    }
+   
     
-    //------------------------------------------------------------------------------------------//
-    //Funcion que permite comunicarse con el servicio
-    //------------------------------------------------------------------------------------------//
+    
+    //...................................................................//
+    //..................... FUNCIONES PARSER ............................//
+    //...................................................................//
     
     
     
-    //------------------------------------------------------------------------------------------//
-    //Funcion que permite comunicarse con el servicio para poder obtener datos
-    //------------------------------------------------------------------------------------------//
-    override func viewDidAppear(_ animated: Bool) {
-        self.effectView.removeFromSuperview()
-        
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        let url = URL(string: "http://200.111.46.182/WS_MovilProyecto/MovilProyecto.asmx/getListadoEmpresas")
-        
-        effectView = activityIndicator(title: "Cargando Información", view: self.view)
-        self.view.addSubview(effectView)
-        let task = URLSession.shared.dataTask(with: url!) {(data, response, error) in
-            if(data != nil){
-                let parser = XMLParser(data: data!)
-                parser.delegate = (self as XMLParserDelegate)
-                parser.parse()
-                
-                DispatchQueue.main.async {
-                    self.Collection.reloadData()
-                    self.effectView.removeFromSuperview()
-                }
-            }
-            else{
-                DispatchQueue.main.async {
-                    self.Collection.reloadData()
-                    let alert = UIAlertController(title: "Error", message: "Problemas de conexión", preferredStyle: UIAlertControllerStyle.alert)
-                    alert.addAction(UIAlertAction(title: "Reintentar", style: UIAlertActionStyle.default, handler: nil))
-                    self.present(alert, animated: true, completion: nil)
-                    self.effectView.removeFromSuperview()
-                    self.viewWillAppear(true)
-                }
-            }
-        }
-        
-        if(items.count == 0){
-            task.resume()
-        }
-    }
-    
-    //------------------------------------------------------------------------------------------//
-    //Funcion que permite guardar en un objeto los datos encontrados
-    //------------------------------------------------------------------------------------------//
     
     func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
         
@@ -160,9 +196,8 @@ class EmpresasViewController: UIViewController, UICollectionViewDelegate, UIColl
         self.foundCharacters = ""
     }
     
-    //------------------------------------------------------------------------------------------//
-    //Funcion que permite retornar String encontrado sin espacios ni saltos de lineas
-    //------------------------------------------------------------------------------------------//
+    
+    
     
     func parser(_ parser: XMLParser, foundCharacters string: String) {
         let value = string.trim();
