@@ -44,7 +44,6 @@ class ViewController: UIViewController, XMLParserDelegate {
         loadingIndicator.isHidden = true
         base_url = "http://200.111.46.182/WS_MovilProyecto/MovilProyecto.asmx"
         self.userDefaults.set(base_url, forKey: "base_url")
-        
     }
     
     override func didReceiveMemoryWarning() {

@@ -90,6 +90,8 @@ class DetalleTextoViewController: UIViewController, UITextViewDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide),
                                                name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         self.txtDato.delegate = self
+        
+        hideKeyboardWhenTappedAround()
     }
 
     
@@ -150,7 +152,7 @@ class DetalleTextoViewController: UIViewController, UITextViewDelegate {
     
     @objc func keyboardWillShow(notification: NSNotification) {
         if let keyboardSize = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue.height{
-            self.txtDato.frame = CGRect(x: self.txtDato.frame.minX, y: self.txtDato.frame.minY, width: self.txtDato.frame.width, height: self.txtDato.frame.height - keyboardSize)
+            self.txtDato.frame = CGRect(x: self.txtDato.frame.minX, y: self.txtDato.frame.minY, width: self.txtDato.frame.width, height: self.txtDato.frame.height - keyboardSize - 30)
         }
     }
     

@@ -857,12 +857,10 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
     func Generar_URL () -> String{
         
         var stringAux : String
-        var UrlModificar_Base = "http://192.168.1.149/WS_MovilProyecto/MovilProyecto.asmx/setActualizarProyectoQuery?"
+        var UrlModificar_Base = "\(base_url)/setActualizarProyectoQuery?"
         var UrlModificar_Parametros = ""
         
         for elementos in items {
-            if(UrlModificar_Parametros.contains(elementos.key) == false){
-                
                 if(elementos.key == "Inicio" || elementos.key == "Termino"){
                     UrlModificar_Parametros = UrlModificar_Parametros + elementos.key + "="
                     stringAux = ChangeDateFormat(Date: elementos.value)
@@ -873,7 +871,6 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
                     stringAux = ChangeStringFormat(cadena: elementos.value)
                      UrlModificar_Parametros = UrlModificar_Parametros + stringAux.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)! + "&"
                 }
-            }
         }
         
         for elem in mapeo{
