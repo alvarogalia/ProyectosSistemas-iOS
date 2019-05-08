@@ -864,12 +864,13 @@ class DetalleTableViewController: UIViewController, UITableViewDelegate, UITable
                 if(elementos.key == "Inicio" || elementos.key == "Termino"){
                     UrlModificar_Parametros = UrlModificar_Parametros + elementos.key + "="
                     stringAux = ChangeDateFormat(Date: elementos.value)
-                    UrlModificar_Parametros = UrlModificar_Parametros + stringAux.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)! + "&"
+                    
+                    UrlModificar_Parametros = UrlModificar_Parametros + stringAux.addingPercentEncoding(withAllowedCharacters: .nonBaseCharacters)! + "&"
                 }
                 else{
                     UrlModificar_Parametros = UrlModificar_Parametros + elementos.key + "="
                     stringAux = ChangeStringFormat(cadena: elementos.value)
-                     UrlModificar_Parametros = UrlModificar_Parametros + stringAux.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)! + "&"
+                     UrlModificar_Parametros = UrlModificar_Parametros + stringAux.addingPercentEncoding(withAllowedCharacters: .nonBaseCharacters)! + "&"
                 }
         }
         

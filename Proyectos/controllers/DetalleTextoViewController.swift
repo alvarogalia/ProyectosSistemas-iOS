@@ -65,7 +65,7 @@ class DetalleTextoViewController: UIViewController, UITextViewDelegate {
 
         lblTitulo.text = SELECTED_TITULO
         txtDato.text = SELECTED_DATO
-        CONTADOR_PALABRAS = txtDato.text!.count
+        CONTADOR_PALABRAS = txtDato.text.lengthOfBytes(using: .utf8)
         
         if(SELECTED_TITULO == "Nombre Proyecto"){
             numPalabras.text! = "\(CONTADOR_PALABRAS) / 200"
@@ -111,7 +111,7 @@ class DetalleTextoViewController: UIViewController, UITextViewDelegate {
     
     
     func textViewDidChange(_ textView: UITextView) {
-        CONTADOR_PALABRAS = txtDato.text!.count
+        CONTADOR_PALABRAS = txtDato.text.lengthOfBytes(using: .utf8)
         
         if(SELECTED_TITULO == "Nombre Proyecto"){
             numPalabras.text! = "\(self.CONTADOR_PALABRAS) / 200"
@@ -122,46 +122,35 @@ class DetalleTextoViewController: UIViewController, UITextViewDelegate {
 
     }
     
-    
-    func textViewShouldEndEditing(_ textView: UITextView) -> Bool {
-        return true
-    }
-    
-    
-    
-    
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         let currentText = txtDato.text!
         guard let stringRange = Range(range, in: currentText) else { return false }
         let changedText = currentText.replacingCharacters(in: stringRange, with: text)
+        var procede = false
+        
         if(SELECTED_TITULO == "Nombre Proyecto"){
-            return changedText.count <= 200
+            procede = changedText.lengthOfBytes(using: .utf8) <= 200
+        }else{
+            procede = changedText.lengthOfBytes(using: .utf8) <= 3950
         }
-        return changedText.count <= 3950
+        
+        if(procede){
+            return procede
+        }else{
+            let alert = UIAlertController(title: "Excede máximo", message: "El texto ingresado supera el máximo permitido", preferredStyle: UIAlertControllerStyle.alert)
+            alert.addAction(UIAlertAction(title: "Entendido", style: UIAlertActionStyle.cancel, handler: nil))
+            self.present(alert, animated: true, completion: nil)
+            return procede
+        }
     }
-    
-    
-    
-    
     
     //...................................................................//
     //................. FUNCIONES TECLADO CELULAR .......................//
     //...................................................................//
-    
-   
-    
     @objc func keyboardWillShow(notification: NSNotification) {
-        if let keyboardSize = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue.height{
-            self.txtDato.frame = CGRect(x: self.txtDato.frame.minX, y: self.txtDato.frame.minY, width: self.txtDato.frame.width, height: self.txtDato.frame.height - keyboardSize - 30)
-        }
+        
     }
-    
-    
-    
     @objc func keyboardWillHide(notification: NSNotification) {
-        self.txtDato.frame = CGRect(x: CGFloat(0.0), y: self.view.frame.minY + 70, width: self.view.frame.width, height: self.view.frame.height - 70)
+        //self.txtDato.frame = CGRect(x: CGFloat(0.0), y: self.view.frame.minY + 70, width: self.view.frame.width, height: self.view.frame.height - 70)
     }
-    
-    
-
 }

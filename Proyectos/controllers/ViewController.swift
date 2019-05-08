@@ -44,6 +44,17 @@ class ViewController: UIViewController, XMLParserDelegate {
         loadingIndicator.isHidden = true
         base_url = "http://200.111.46.182/WS_MovilProyecto/MovilProyecto.asmx"
         self.userDefaults.set(base_url, forKey: "base_url")
+        NotificationCenter.default.addObserver(self, selector: #selector(ViewController.keyboardWillShow(sender:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(ViewController.keyboardWillHide(sender:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+    }
+    
+    @objc func keyboardWillShow(sender: NSNotification) {
+        self.view.frame.origin.y = -150 // Move view 150 points upward
+    }
+    
+    @objc func keyboardWillHide(sender: NSNotification) {
+        self.view.frame.origin.y = 0 // Move view to original position
     }
     
     override func didReceiveMemoryWarning() {
